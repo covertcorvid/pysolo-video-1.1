@@ -120,6 +120,7 @@ class panelGridView(wx.ScrolledWindow):
                 elif diff > 0:
                     # Removing monitors from grid
                     i -= 1
+                    self.previewPanels.pop(len(self.previewPanels)-1)
                     self.grid_mainSizer.Hide(old-1)
                     self.grid_mainSizer.Remove(old-1)
                     old -= 1
