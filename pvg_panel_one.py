@@ -150,7 +150,7 @@ class panelConfigure(wx.Panel):
 
         #Static box1 (LEFT)
         sb_1 = wx.StaticBox(self, -1, "Select Monitor")#, size=(250,-1))
-        sbSizer_1 = wx.StaticBoxSizer (sb_1, wx.VERTICAL)
+        self.sbSizer_1 = wx.StaticBoxSizer (sb_1, wx.VERTICAL)
 
         n_monitors = options.GetOption("Monitors")
         self.MonitorList = ['Monitor %s' % (int(m) + 1) for m in range( n_monitors )]
@@ -175,19 +175,19 @@ class panelConfigure(wx.Panel):
         btnSizer_1.Add ( self.btnStop , 0, wx.ALIGN_CENTER|wx.LEFT|wx.TOP|wx.DOWN, 5 )
         btnSizer_1.Add ( self.applyButton, 0, wx.ALIGN_RIGHT|wx.LEFT|wx.RIGHT|wx.TOP, 5 )
 
-        sbSizer_1.Add ( self.thumbnailNumber, 0, wx.ALIGN_CENTRE|wx.LEFT|wx.RIGHT|wx.TOP, 5 )
-        sbSizer_1.Add ( self.currentSource, 0, wx.EXPAND|wx.ALIGN_CENTRE|wx.LEFT|wx.RIGHT|wx.TOP, 5 )
-        sbSizer_1.Add ( btnSizer_1, 0, wx.EXPAND|wx.ALIGN_BOTTOM|wx.TOP, 5 )
+        self.sbSizer_1.Add ( self.thumbnailNumber, 0, wx.ALIGN_CENTRE|wx.LEFT|wx.RIGHT|wx.TOP, 5 )
+        self.sbSizer_1.Add ( self.currentSource, 0, wx.EXPAND|wx.ALIGN_CENTRE|wx.LEFT|wx.RIGHT|wx.TOP, 5 )
+        self.sbSizer_1.Add ( btnSizer_1, 0, wx.EXPAND|wx.ALIGN_BOTTOM|wx.TOP, 5 )
 
-        lowerSizer.Add (sbSizer_1, 0, wx.EXPAND|wx.ALL, 5)
+        lowerSizer.Add (self.sbSizer_1, 0, wx.EXPAND|wx.ALL, 5)
 
         #Static box2 (CENTER)
         sb_2 = wx.StaticBox(self, -1, "Select Video input" )
-        sbSizer_2 = wx.StaticBoxSizer (sb_2, wx.VERTICAL)
-        grid2 = wx.FlexGridSizer( 0, 2, 0, 0 )
+        self.sbSizer_2 = wx.StaticBoxSizer (sb_2, wx.VERTICAL)
+        self.grid2 = wx.FlexGridSizer( 0, 2, 0, 0 )
 
-        n_cams = options.GetOption("Webcams")
-        self.WebcamsList = [ 'Webcam %s' % (int(w) +1) for w in range( n_cams ) ]
+        self.n_cams = options.GetOption("Webcams")
+        self.WebcamsList = [ 'Webcam %s' % (int(w) +1) for w in range( self.n_cams ) ]
         rb1 = wx.RadioButton(self, -1, 'Camera', style=wx.RB_GROUP)
         source1 = wx.ComboBox(self, -1, size=(285,-1) , choices = self.WebcamsList, style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
         self.Bind(wx.EVT_COMBOBOX, self.sourceCallback, source1)
@@ -205,8 +205,8 @@ class panelConfigure(wx.Panel):
         self.controls.append((rb3, source3))
 
         for radio, source in self.controls:
-            grid2.Add( radio , 0, wx.ALIGN_LEFT|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 2 )
-            grid2.Add( source , 0, wx.ALIGN_CENTRE|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 2 )
+            self.grid2.Add( radio , 0, wx.ALIGN_LEFT|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 2 )
+            self.grid2.Add( source , 0, wx.ALIGN_CENTRE|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 2 )
             self.Bind(wx.EVT_RADIOBUTTON, self.onChangeSource, radio )
             source.Enable(False)
 
@@ -214,8 +214,8 @@ class panelConfigure(wx.Panel):
 
         #grid2.Add(wx.StaticText(self, -1, ""))
 
-        sbSizer_2.Add( grid2 )
-        lowerSizer.Add(sbSizer_2, 0, wx.EXPAND|wx.ALL, 5)
+        self.sbSizer_2.Add( self.grid2 )
+        lowerSizer.Add(self.sbSizer_2, 0, wx.EXPAND|wx.ALL, 5)
 
         #Static box3 (RIGHT)
         sb_3 = wx.StaticBox(self, -1, "Set Tracking Parameters")
@@ -430,6 +430,39 @@ class panelConfigure(wx.Panel):
         if self.thumbnail:
             self.thumbnail.mon.isSDMonitor = event.IsChecked()
 
+    def updateMonitors(self, old, new):
+        self.MonitorList = ['Monitor %s' % (int(m) + 1) for m in range(new)]
+
+        self.thumbnailNumber = wx.ComboBox(self, -1, size=(-1,-1) ,
+            choices=self.MonitorList, style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
+        self.Bind (wx.EVT_COMBOBOX, self.onChangingMonitor, self.thumbnailNumber)
+
+        self.sbSizer_1.Remove(0)
+        self.sbSizer_1.Insert(0, self.thumbnailNumber, 0, wx.ALIGN_CENTRE | wx.LEFT | wx.RIGHT | wx.TOP, 5)
+        self.sbSizer_1.Layout()
+        self.Layout()
+
+    def updateWebcams(self, old, new):
+        self.WebcamsList = [ 'Webcam %s' % (int(w) +1) for w in range(new) ]
+
+        source1 = wx.ComboBox(self, -1, size=(285,-1) , choices = self.WebcamsList,
+            style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
+        self.Bind(wx.EVT_COMBOBOX, self.sourceCallback, source1)
+        source1.Enable(True)
+
+        self.controls.remove(self.controls[0])
+        rb1 = wx.RadioButton(self, -1, 'Camera', style=wx.RB_GROUP)
+        self.Bind(wx.EVT_RADIOBUTTON, self.onChangeSource, rb1)
+
+        self.controls.insert(0, (rb1,source1))
+
+        self.grid2.Remove(0)
+        self.grid2.Insert(0, rb1)
+        self.grid2.Remove(1)
+        self.grid2.Insert(1, source1)
+
+        self.grid2.Layout()
+        self.Layout()
 
 class panelOne(wx.Panel):
     """
@@ -442,6 +475,7 @@ class panelOne(wx.Panel):
 
         self.monitor_number = options.GetOption("Monitors")
         self.tn_size = options.GetOption("ThumbnailSize")
+        self.n_cams = options.GetOption("Webcams")
 
         self.temp_source  = ''
         self.source = ''
@@ -462,11 +496,15 @@ class panelOne(wx.Panel):
         self.lowerPanel.onStop()
 
     def onRefresh(self):
-        new_mon_num = options.GetOption("Monitors")
-        if self.monitor_number != new_mon_num:
-            self.scrollThumbnails.updateMonitors(self.monitor_number, new_mon_num)
-        new_tn_size = options.GetOption("ThumbnailSize")
-        if self.tn_size != new_tn_size:
-            self.scrollThumbnails.updateThumbs(self.tn_size, new_tn_size)
+        if self.monitor_number != options.GetOption("Monitors"):
+            self.scrollThumbnails.updateMonitors(self.monitor_number, options.GetOption("Monitors"))
+            self.lowerPanel.updateMonitors(self.monitor_number, options.GetOption("Monitors"))
+            self.monitor_number = options.GetOption("Monitors")
+        if self.tn_size != options.GetOption("ThumbnailSize"):
+            self.scrollThumbnails.updateThumbs(self.tn_size, options.GetOption("ThumbnailSize"))
+            self.tn_size = options.GetOption("ThumbnailSize")
+        if self.n_cams != options.GetOption("Webcams"):
+            self.lowerPanel.updateWebcams(self.n_cams, options.GetOption("Webcams"))
+            self.n_cams = options.GetOption("Webcams")
         self.PanelOneSizer.Layout()
         self.Layout()
