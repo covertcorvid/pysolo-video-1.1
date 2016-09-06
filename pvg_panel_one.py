@@ -274,6 +274,7 @@ class panelConfigure(wx.Panel):
 
         return source, sourceType
 
+    # Returns whether we are tracking distance, vbs, or xy coords
     def __getTrackingType(self):
         """
         return which tracking we are chosing
@@ -285,27 +286,26 @@ class panelConfigure(wx.Panel):
 
         return trackType
 
+    # Event handler for the play button
     def onPlay (self, event=None):
-        """
-        """
         if self.thumbnail:
             self.thumbnail.Play()
             self.btnStop.Enable(True)
 
+    # Event handler for the stop button
     def onStop (self, event=None):
-        """
-        """
         if self.thumbnail and self.thumbnail.isPlaying:
             self.thumbnail.Stop()
             self.btnStop.Enable(False)
 
+    # Event handler for changing monitor via clicking on thumbnail
     def onThumbnailClicked(self, evt):
         """
         Picking thumbnail by clicking on it
         """
-        self.monitor_number = evt.number + 1
+        self.monitor_number = evt.number #+ 1
         self.thumbnail = evt.thumbnail
-        self.thumbnailNumber.SetValue(self.MonitorList[self.monitor_number -1 ])
+        self.thumbnailNumber.SetValue(self.MonitorList[self.monitor_number]) # -1
         self.updateThumbnail()
 
     # Event handler for changing monitor via dropdown box
