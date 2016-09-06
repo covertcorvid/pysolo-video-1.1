@@ -107,15 +107,16 @@ class panelGridView(wx.ScrolledWindow):
             diff = old - now
             self.gridSize = now
             i = diff
-            j = 0
             while i != 0:
                 if diff < 0:
                     # Adding monitors to grid
                     i += 1
-                    self.previewPanels.append ( thumbnailPanel(self, monitor_number=old+j, thumbnailSize = self.thumbnailSize) )
-                    self.grid_mainSizer.Add(self.previewPanels[old+j])
+                    self.previewPanels.append ( thumbnailPanel(self, monitor_number=old,
+                        thumbnailSize = self.thumbnailSize) )
+                    self.grid_mainSizer.Add(self.previewPanels[old])
                     self.grid_mainSizer.Layout()
-                    j += 1
+                    self.grid_mainSizer.Show(old)
+                    old += 1
                 elif diff > 0:
                     # Removing monitors from grid
                     i -= 1
