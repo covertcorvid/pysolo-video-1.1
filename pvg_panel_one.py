@@ -88,7 +88,8 @@ class panelGridView(wx.ScrolledWindow):
         #Populate the thumbnail grid
         self.previewPanels = []
         for i in range (int(gridSize)):
-            self.previewPanels.append ( thumbnailPanel(self, monitor_number=i, thumbnailSize=self.thumbnailSize) )
+            self.previewPanels.append ( thumbnailPanel(self, monitor_number=i,
+                thumbnailSize=self.thumbnailSize) )
             self.grid_mainSizer.Add(self.previewPanels[i])#, 0, wx.EXPAND|wx.FIXED_MINSIZE, 0)
 
         self.SetSizer(self.grid_mainSizer)
@@ -136,7 +137,8 @@ class panelConfigure(wx.Panel):
     def __init__(self, parent):
         """
         """
-        wx.Panel.__init__(self, parent, wx.ID_ANY, size=(-1,300), style=wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        wx.Panel.__init__(self, parent, wx.ID_ANY, size=(-1,300),
+            style=wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
         self.parent = parent
 
         self.thumbnail = None
@@ -270,10 +272,11 @@ class panelConfigure(wx.Panel):
     def __getTrackingType(self):
         """
         return which tracking we are chosing
+        ['DISTANCE','VBS','XY_COORDS']
         """
-        if self.trackDistanceRadio.GetValue(): trackType = 0
-        elif self.trackVirtualBM.GetValue(): trackType = 1
-        elif self.trackPosition.GetValue(): trackType = 2
+        if self.trackDistanceRadio.GetValue(): trackType = 0 #"DISTANCE"
+        elif self.trackVirtualBM.GetValue(): trackType = 1 #"VBS"
+        elif self.trackPosition.GetValue(): trackType = 2 #"XY_COORDS"
 
         return trackType
 
@@ -409,7 +412,7 @@ class panelConfigure(wx.Panel):
 
         options.SetMonitor(self.monitor_number,
                            self.thumbnail.sourceType,
-                           self.thumbnail.source,
+                           self.thumbnail.source, #self.thumbnail.source+1
                            self.thumbnail.track,
                            self.mask_file,
                            self.trackType,

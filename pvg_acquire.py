@@ -2,25 +2,25 @@
 # -*- coding: utf-8 -*-
 #
 #       pvg_acquire.py
-#       
+#
 #       Copyright 2011 Giorgio Gilestro <giorgio@gilest.ro>
-#       
+#
 #       This program is free software; you can redistribute it and/or modify
 #       it under the terms of the GNU General Public License as published by
 #       the Free Software Foundation; either version 2 of the License, or
 #       (at your option) any later version.
-#       
+#
 #       This program is distributed in the hope that it will be useful,
 #       but WITHOUT ANY WARRANTY; without even the implied warranty of
 #       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #       GNU General Public License for more details.
-#       
+#
 #       You should have received a copy of the GNU General Public License
 #       along with this program; if not, write to the Free Software
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
-#       
-#       
+#
+#
 
 __author__ = "Giorgio Gilestro <giorgio@gilest.ro>"
 __version__ = "$Revision: 1.0 $"
@@ -36,7 +36,7 @@ import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import wx.grid as gridlib
 
-
+# Not present in dev version
 class customDataTable(gridlib.PyGridTableBase):
     def __init__(self, colLabels, dataTypes, useValueCleaner=True):
         gridlib.PyGridTableBase.__init__(self)
@@ -176,12 +176,12 @@ class customDataTable(gridlib.PyGridTableBase):
         """
 
         [self.data.pop(int(x)-1) for x in rows]
-        
+
         self.GetView().ProcessTableMessage(
                 gridlib.GridTableMessage(self,
                 gridlib.GRIDTABLE_NOTIFY_ROWS_DELETED,
                 len(rows)         ))
-       
+
 
     def SetData(self, data=None):
         """
@@ -233,7 +233,7 @@ class customDataTable(gridlib.PyGridTableBase):
         """
         return self.colLabels[col]
 
- 
+
 
     def GetTypeName(self, row, col):
         """
@@ -414,7 +414,7 @@ class CustTableGrid(gridlib.Grid):
         """
         while self.MovePageDown():
             pass
-        
+
     def AddRow(self, *kargs, **kwargs):
         """
         Add one or more rows at the bottom of the table / sheet
@@ -679,15 +679,15 @@ class CustTableGrid(gridlib.Grid):
 
 class pvg_AcquirePanel(wx.Panel):
     def __init__(self, parent):
-        
+
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self.parent = parent
 
         mainSizer = wx.BoxSizer(wx.VERTICAL)
         self.FBconfig = FileBrowseButton(self, -1, labelText='Pick file', size=(300,-1), changeCallback = self.configCallback)
-        
+
         colLabels = ['Monitor', 'Source', 'Mask', 'Output', 'Track type', 'Track']
- 
+
         dataTypes = [gridlib.GRID_VALUE_NUMBER,
                           gridlib.GRID_VALUE_STRING,
                           gridlib.GRID_VALUE_STRING,
@@ -698,71 +698,71 @@ class pvg_AcquirePanel(wx.Panel):
 
         self.grid = CustTableGrid(self, colLabels, dataTypes, enableEdit=True, useMenu=False)
         self.grid.Clear()
-        
+
         btnSizer = wx.BoxSizer(wx.HORIZONTAL)
         self.startBtn = wx.Button(self, wx.ID_ANY, 'Start')
         self.stopBtn = wx.Button(self, wx.ID_ANY, 'Stop')
         self.stopBtn.Enable(False)
         self.Bind(wx.EVT_BUTTON, self.onStop, self.stopBtn)
         self.Bind(wx.EVT_BUTTON, self.onStart, self.startBtn)
-        btnSizer.Add (self.startBtn, 0, wx.ALL, 5) 
+        btnSizer.Add (self.startBtn, 0, wx.ALL, 5)
         btnSizer.Add (self.stopBtn, 0, wx.ALL, 5)
 
 
-        mainSizer.Add(self.FBconfig, 0, wx.EXPAND|wx.ALL, 5) 
+        mainSizer.Add(self.FBconfig, 0, wx.EXPAND|wx.ALL, 5)
         mainSizer.Add(self.grid, 1, wx.EXPAND, 0)
         mainSizer.Add(btnSizer, 0, wx.ALL, 5)
-        self.SetSizer(mainSizer) 
+        self.SetSizer(mainSizer)
 
     def configCallback(self, event):
         """
         """
         self.loadFile( self.FBconfig.GetValue() )
-        
-        
+
+
     def loadFile(self, filename):
         """
         """
         self.options = pvg_config(filename)
         self.updateTable()
         self.parent.sb.SetStatusText('Loaded file %s' % filename)
-        
+
         return True
-        
+
     def updateTable(self):
         """
         """
         monitorsData = self.options.getMonitorsData()
-        
+
         self.grid.Clear()
         self.monitors = {}
-        
+
         for mn in monitorsData:
-            
+
             m = monitorsData[mn]
-            
+
             try:
                 s = os.path.split( m['source'] )[1]
             except:
                 s = 'Camera %02d' % ( m['source'] + 1 )
-            
+
             mf = os.path.split(m['mask_file'])[1]
             df = 'Monitor%02d.txt' % (mn)
             row = [mn, s, mf, df, m['track_type'], m['track'] ]
             self.grid.AddRow(row)
-            
-            
+
+
         for mn in monitorsData:
             m = monitorsData[mn]
             self.monitors[mn] = ( acquireThread(mn, m['source'], m['resolution'], m['mask_file'], m['track'], m['track_type'], m['dataFolder']) )
-    
+
     def isToTrack(self, monitor):
         """
         """
         d = self.grid.GetData()
         for row in d:
             if monitor == row[0]: return row[-1]
-    
+
     def onStart(self, event=None):
         """
         """
@@ -770,14 +770,14 @@ class pvg_AcquirePanel(wx.Panel):
         self.stopBtn.Enable(self.acquiring)
         self.startBtn.Enable(not self.acquiring)
         c = 0
-        
+
         for mon in self.monitors:
             if self.isToTrack(mon):
                 self.monitors[mon].doTrack()
                 c+=1
-            
+
         self.parent.sb.SetStatusText('Tracking %s Monitors' % c)
-    
+
     def onStop(self, event):
         """
         """
@@ -786,9 +786,9 @@ class pvg_AcquirePanel(wx.Panel):
         self.startBtn.Enable(not self.acquiring)
         for mon in self.monitors:
             self.monitors[mon].halt()
-            
+
         self.parent.sb.SetStatusText('All tracking is now stopped')
-        
+
 class acquireFrame(wx.Frame):
     def __init__(self, *args, **kwargs):
         kwargs["size"] = (800, 600)
@@ -806,11 +806,11 @@ class acquireFrame(wx.Frame):
         if filename is None:
             pDir = os.environ['HOME']
             filename = os.path.join (pDir, DEFAULT_CONFIG)
-            
+
         self.acq_panel.loadFile(filename)
-        
+
         return True
-        
+
     def Start(self):
         """
         """
@@ -827,7 +827,7 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
 
-    
+
     app=wx.PySimpleApp(0)
     frame_acq = acquireFrame(None, -1, '')
     app.SetTopWindow(frame_acq)
@@ -838,8 +838,5 @@ if __name__ == '__main__':
 
     if cfgloaded and options.acquire:
         frame_acq.Start()
-    
+
     app.MainLoop()
-
-
-    
