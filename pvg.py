@@ -26,7 +26,7 @@
 
 import wx, os
 
-from pvg_options import optionsFrame
+from pvg_options import pvg_OptionsPanel
 from pvg_panel_one import panelOne
 from pvg_panel_two import panelLiveView
 from pvg_common import options, DEFAULT_CONFIG
@@ -199,15 +199,16 @@ class mainFrame(wx.Frame):
     def onConfigure(self, event):
         """
         """
-        frame_opt = optionsFrame(self)
+        frame_opt = pvg_OptionsPanel(self)
         #frame_opt.Show()
         res = frame_opt.ShowModal()
-        frame_opt.Destroy()
         if res == wx.ID_OK:
             print "applying any changes"
+            frame_opt.onSave()
             self.videoNotebook.updateUI()
         elif res == wx.ID_CANCEL:
             print "no changes were made"
+        frame_opt.Destroy()
 
 
 
