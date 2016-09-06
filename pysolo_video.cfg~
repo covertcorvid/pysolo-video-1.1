@@ -1,0 +1,25 @@
+[Options]
+webcams = 3
+data_folder = /home/gg/Desktop/videoDAM
+thumbnailsize = 320, 240
+fullsize = 640, 480
+fps_recording = 5
+fps_preview = 5
+monitors = 6
+
+[Monitor1]
+sourcetype = 0
+source = 0
+track = True
+maskfile = /home/gg/Dropbox/myCode/pySolo-Video/Monitor_SD_1.msk
+tracktype = 0
+issdmonitor = False
+
+[Monitor2]
+sourcetype = 0
+source = 2
+track = False
+maskfile = /home/gg/Dropbox/myCode/pySolo-Video/Monitor_SD_2.msk
+tracktype = 0
+issdmonitor = False
+
