@@ -58,6 +58,11 @@ class mainNotebook(wx.Notebook):
         self.panelOne.StopPlaying()
         self.panelTwo.StopPlaying()
 
+    def updateUI(self):
+        self.panelOne.onRefresh()
+        self.panelTwo.onRefresh()
+        self.Layout()
+
 class mainFrame(wx.Frame):
     """
     The main frame of the application
@@ -194,8 +199,15 @@ class mainFrame(wx.Frame):
     def onConfigure(self, event):
         """
         """
-        frame_opt = optionsFrame(self, -1, '')
-        frame_opt.Show()
+        frame_opt = optionsFrame(self)
+        #frame_opt.Show()
+        res = frame_opt.ShowModal()
+        frame_opt.Destroy()
+        if res == wx.ID_OK:
+            print "applying any changes"
+            self.videoNotebook.updateUI()
+        elif res == wx.ID_CANCEL:
+            print "no changes were made"
 
 
 
