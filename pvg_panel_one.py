@@ -308,27 +308,32 @@ class panelConfigure(wx.Panel):
         self.thumbnailNumber.SetValue(self.MonitorList[self.monitor_number -1 ])
         self.updateThumbnail()
 
+    # Event handler for changing monitor via dropdown box
     def onChangingMonitor(self, evt):
         """
         Picking thumbnail by using the dropbox
         """
         sel = evt.GetString()
-        self.monitor_number = self.MonitorList.index(sel) + 1
+        self.monitor_number = self.MonitorList.index(sel) #+ 1
         self.thumbnail = self.parent.scrollThumbnails.previewPanels[self.monitor_number]         #this is not very elegant
         self.updateThumbnail()
 
+    # Refresh thumbnail and controls
     def updateThumbnail(self):
         """
         Refreshing thumbnail data
         """
+        # If monitor exists, get info. Else, set to null/default values.
         if options.HasMonitor(self.monitor_number):
             sourceType, source, track, mask_file, trackType, isSDMonitor = options.GetMonitor(self.monitor_number)
         else:
             sourceType, source, track, mask_file, trackType, isSDMonitor = [0, '', False, '', 1, False]
 
+        # If monitor is playing a camera
         if sourceType == 0 and source != '':
             source = self.WebcamsList[source]
 
+        # Ensure source and type match throughout program
         self.source = self.thumbnail.source = source
         self.sourceType = self.thumbnail.sourceType = sourceType
         self.thumbnail.track = track
@@ -358,20 +363,15 @@ class panelConfigure(wx.Panel):
         self.pickMaskBrowser.SetValue(mask_file or '')
         [self.trackDistanceRadio, self.trackVirtualBM, self.trackPosition][trackType].SetValue(True)
 
-
     def sourceCallback (self, event):
-        """
-        """
         self.applyButton.Enable(True)
 
-
+    # Event handler for source radio buttons
     def onChangeSource(self, event):
-        """
-
-        """
-
+        # Determine which radio button was selected
         radio_selected = event.GetEventObject()
 
+        # Enable the selected source, disable all others
         for radio, source in self.controls:
             if radio is radio_selected:
                 source.Enable(True)
@@ -380,28 +380,31 @@ class panelConfigure(wx.Panel):
 
         self.applyButton.Enable(True)
 
-
+    # Event handler for the Apply button on the lower left of panel one
     def onApplySource(self, event):
-        """
-        """
-
+        # Get source and mask info from the user's selections
         source, sourceType = self.__getSource()
         track = self.activateTracking.GetValue()
         self.mask_file = self.pickMaskBrowser.GetValue()
         self.trackType = self.__getTrackingType()
 
+        # If there exists a thumbnail
+        # Else statement belongs to inner if statement, not sure why it keeps dedenting
         if self.thumbnail:
+            if sourceType > 0:
+                camera = source # If source is a file, get file
+            else:
+                camera = self.WebcamsList.index(source) # Otherwise, check webcam list
 
-            if sourceType > 0: camera = source
-            else: camera = self.WebcamsList.index(source)
-
+            # Set the thumbnail's source to the source we have chosen
+            # Specify if it is webcam, file, etc
             self.thumbnail.source = camera
             self.thumbnail.sourceType = sourceType
 
             #Change the source text
             self.currentSource.SetValue( os.path.split(source)[1] )
 
-            #Set thumbnail's source
+            #Set thumbnail's monitor
             self.thumbnail.setMonitor(camera)
 
             #Enable buttons
@@ -412,12 +415,9 @@ class panelConfigure(wx.Panel):
             self.saveMonitorConfiguration()
 
     def saveMonitorConfiguration(self):
-        """
-        """
-
         options.SetMonitor(self.monitor_number,
                            self.thumbnail.sourceType,
-                           self.thumbnail.source, #self.thumbnail.source+1
+                           self.thumbnail.source, #self.thumbnail.source+1 in dev code
                            self.thumbnail.track,
                            self.mask_file,
                            self.trackType,
@@ -425,32 +425,36 @@ class panelConfigure(wx.Panel):
                            )
         options.Save()
 
-
     def onActivateTracking(self, event):
-        """
-        """
         if self.thumbnail:
             self.thumbnail.track = event.IsChecked()
 
     def onSDMonitor(self, event):
-        """
-        """
         if self.thumbnail:
             self.thumbnail.mon.isSDMonitor = event.IsChecked()
 
-    def updateMonitors(self, old, new):
-        self.MonitorList = ['Monitor %s' % (int(m) + 1) for m in range(new)]
+    # Updates the dropdown box of monitors on lower half of panel one
+    # Should be working
+    def updateMonitors(self, old, now):
+        # Generate new list of monitors
+        self.MonitorList = ['Monitor %s' % (int(m) + 1) for m in range(now)]
 
+        # Create a new combobox with the correct number of monitors
         self.thumbnailNumber = wx.ComboBox(self, -1, size=(-1,-1) ,
             choices=self.MonitorList, style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
         self.Bind (wx.EVT_COMBOBOX, self.onChangingMonitor, self.thumbnailNumber)
 
+        # Remove the old combobox and replace it with this new one
+        self.sbSizer_1.Hide(0)
         self.sbSizer_1.Remove(0)
         self.sbSizer_1.Insert(0, self.thumbnailNumber, 0, wx.ALIGN_CENTRE | wx.LEFT | wx.RIGHT | wx.TOP, 5)
-        self.sbSizer_1.Layout()
-        self.Layout()
 
-    def updateWebcams(self, old, new):
+        # Display UI changes
+        self.sbSizer_1.Layout()
+
+    # Updates the dropdown box of cameras on lower half of panel one
+    # Should be working
+    def updateWebcams(self, old, now):
         # Generate the list of webcams
         self.WebcamsList = [ 'Webcam %s' % (int(w) +1) for w in range(new) ]
 
@@ -510,17 +514,22 @@ class panelOne(wx.Panel):
         self.lowerPanel.onStop()
 
     # Checks for changes to be made to UI and implements them.
-    # TODO: Make sure lowerpanel updating properly
     def onRefresh(self):
+        # Check number of monitors
         if self.monitor_number != options.GetOption("Monitors"):
             self.scrollThumbnails.updateMonitors(self.monitor_number, options.GetOption("Monitors"))
             self.lowerPanel.updateMonitors(self.monitor_number, options.GetOption("Monitors"))
             self.monitor_number = options.GetOption("Monitors")
+
+        # Check thumbnail size
         if self.tn_size != options.GetOption("ThumbnailSize"):
             self.scrollThumbnails.updateThumbs(self.tn_size, options.GetOption("ThumbnailSize"))
             self.tn_size = options.GetOption("ThumbnailSize")
+
+        # Check number of webcams
         if self.n_cams != options.GetOption("Webcams"):
             self.lowerPanel.updateWebcams(self.n_cams, options.GetOption("Webcams"))
             self.n_cams = options.GetOption("Webcams")
+
+        # Show changes to UI
         self.PanelOneSizer.Layout()
-        self.Layout()
