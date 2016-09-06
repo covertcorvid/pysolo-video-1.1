@@ -87,7 +87,7 @@ class panelGridView(wx.ScrolledWindow):
 
         #Populate the thumbnail grid
         self.previewPanels = []
-        for i in range (int(gridSize)):
+        for i in range(0, int(gridSize)):
             self.previewPanels.append ( thumbnailPanel(self, monitor_number=i,
                 thumbnailSize=self.thumbnailSize) )
             self.grid_mainSizer.Add(self.previewPanels[i])#, 0, wx.EXPAND|wx.FIXED_MINSIZE, 0)
@@ -103,6 +103,8 @@ class panelGridView(wx.ScrolledWindow):
         wx.PostEvent(self.parent.lowerPanel, event)
         event.Skip()
 
+    # Changes number of monitor thumbnails.
+    # Should be all done for this class.
     def updateMonitors(self, old, now):
             diff = old - now
             self.gridSize = now
@@ -126,6 +128,7 @@ class panelGridView(wx.ScrolledWindow):
                     old -= 1
                     self.grid_mainSizer.Layout()
 
+    # Changes thumbnail sizes.
     def updateThumbs(self, old, new):
         self.thumbnailSize = new
         for i in range(0, self.gridSize):
@@ -448,26 +451,33 @@ class panelConfigure(wx.Panel):
         self.Layout()
 
     def updateWebcams(self, old, new):
+        # Generate the list of webcams
         self.WebcamsList = [ 'Webcam %s' % (int(w) +1) for w in range(new) ]
 
+        # Create a new combobox with correct number of webcams
         source1 = wx.ComboBox(self, -1, size=(285,-1) , choices = self.WebcamsList,
             style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
         self.Bind(wx.EVT_COMBOBOX, self.sourceCallback, source1)
         source1.Enable(True)
 
+        # Create a new radio button to go with the combobox
         self.controls.remove(self.controls[0])
         rb1 = wx.RadioButton(self, -1, 'Camera', style=wx.RB_GROUP)
         self.Bind(wx.EVT_RADIOBUTTON, self.onChangeSource, rb1)
 
+        # Add the button and combobox to the controls list
         self.controls.insert(0, (rb1,source1))
 
+        # Remove the old ones from the layout and add the new ones
+        self.grid2.Hide(0)
         self.grid2.Remove(0)
         self.grid2.Insert(0, rb1)
+        self.grid2.Hide(1)
         self.grid2.Remove(1)
         self.grid2.Insert(1, source1)
 
+        # Show changes to UI
         self.grid2.Layout()
-        self.Layout()
 
 class panelOne(wx.Panel):
     """
@@ -475,9 +485,9 @@ class panelOne(wx.Panel):
     All the thumbnails
     """
     def __init__(self, parent):
-
         wx.Panel.__init__(self, parent)
 
+        # Retrieve settings
         self.monitor_number = options.GetOption("Monitors")
         self.tn_size = options.GetOption("ThumbnailSize")
         self.n_cams = options.GetOption("Webcams")
@@ -486,20 +496,21 @@ class panelOne(wx.Panel):
         self.source = ''
         self.sourceType = -1
 
+        # Create a grid of thumbnails and a configure panel
         self.scrollThumbnails = panelGridView(self, gridSize=self.monitor_number, thumbnailSize=self.tn_size)
         self.lowerPanel = panelConfigure(self)
 
+        # Display elements
         self.PanelOneSizer = wx.BoxSizer(wx.VERTICAL)
         self.PanelOneSizer.Add(self.scrollThumbnails, 1, wx.EXPAND, 0)
         self.PanelOneSizer.Add(self.lowerPanel, 0, wx.EXPAND, 0)
         self.SetSizer(self.PanelOneSizer)
 
-
     def StopPlaying(self):
-        """
-        """
         self.lowerPanel.onStop()
 
+    # Checks for changes to be made to UI and implements them.
+    # TODO: Make sure lowerpanel updating properly
     def onRefresh(self):
         if self.monitor_number != options.GetOption("Monitors"):
             self.scrollThumbnails.updateMonitors(self.monitor_number, options.GetOption("Monitors"))
