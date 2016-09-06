@@ -83,15 +83,15 @@ class panelGridView(wx.ScrolledWindow):
         self.parent = parent
         self.thumbnailSize = thumbnailSize
 
-        grid_mainSizer = wx.GridSizer(6,3,2,2)
+        self.grid_mainSizer = wx.GridSizer(6,3,2,2)
 
         #Populate the thumbnail grid
         self.previewPanels = []
         for i in range (int(gridSize)):
             self.previewPanels.append ( thumbnailPanel(self, monitor_number=i, thumbnailSize=self.thumbnailSize) )
-            grid_mainSizer.Add(self.previewPanels[i])#, 0, wx.EXPAND|wx.FIXED_MINSIZE, 0)
+            self.grid_mainSizer.Add(self.previewPanels[i])#, 0, wx.EXPAND|wx.FIXED_MINSIZE, 0)
 
-        self.SetSizer(grid_mainSizer)
+        self.SetSizer(self.grid_mainSizer)
 
         self.Bind(EVT_THUMBNAIL_CLICKED, self.onThumbnailClicked)
 
@@ -111,7 +111,7 @@ class panelGridView(wx.ScrolledWindow):
                 if diff < 0:
                     # Adding monitors to grid
                     i += 1
-                    self.previewPanels.append ( thumbnailPanel(self, monitor_numer=old+j, thumbnailSize = self.thumbnailSize) )
+                    self.previewPanels.append ( thumbnailPanel(self, monitor_number=old+j, thumbnailSize = self.thumbnailSize) )
                     self.grid_mainSizer.Add(self.previewPanels[old+j])
                     self.grid_mainSizer.Layout()
                     j += 1
