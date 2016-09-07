@@ -32,7 +32,6 @@ class thumbnailPanel(previewPanel):
     """
     A small preview Panel to be used as thumbnail
     """
-
     def __init__( self, parent, monitor_number, thumbnailSize=(320,240) ):
         previewPanel.__init__(self, parent, size=thumbnailSize, keymode=False)
 
@@ -43,7 +42,7 @@ class thumbnailPanel(previewPanel):
 
         self.Bind(wx.EVT_LEFT_UP, self.onLeftClick)
 
-
+    # Displays the monitor number over top of the thumbnail
     def displayNumber(self):
         """
         """
@@ -57,6 +56,7 @@ class thumbnailPanel(previewPanel):
         text1 = wx.StaticText( self, wx.ID_ANY, '%s' % (self.number+1), pos)
         text1.SetFont(font1)
 
+    # Event handler for thumbnail being clicked on
     def onLeftClick(self, evt):
         """
         Send signal around that the thumbnail was clicked
@@ -69,20 +69,18 @@ class thumbnailPanel(previewPanel):
 
         self.GetEventHandler().ProcessEvent(event)
 
-
-
 class panelGridView(wx.ScrolledWindow):
     """
+    The scrollable grid of monitor thumbnails on panel one
     """
     def __init__(self, parent, gridSize, thumbnailSize=(320,240) ):
-        """
-        """
+        # Set up scrolling window
         wx.ScrolledWindow.__init__(self, parent, wx.ID_ANY, size=(-1,600))
         self.SetScrollbars(1, 1, 1, 1)
         self.SetScrollRate(10, 10)
+
         self.parent = parent
         self.thumbnailSize = thumbnailSize
-
         self.grid_mainSizer = wx.GridSizer(6,3,2,2)
 
         #Populate the thumbnail grid
@@ -90,12 +88,14 @@ class panelGridView(wx.ScrolledWindow):
         for i in range(0, int(gridSize)):
             self.previewPanels.append ( thumbnailPanel(self, monitor_number=i,
                 thumbnailSize=self.thumbnailSize) )
-            self.grid_mainSizer.Add(self.previewPanels[i])#, 0, wx.EXPAND|wx.FIXED_MINSIZE, 0)
+            self.grid_mainSizer.Add(self.previewPanels[i])
 
+        # Make elements visible in UI
         self.SetSizer(self.grid_mainSizer)
-
+        # Set up listener for clicking on thumbnails
         self.Bind(EVT_THUMBNAIL_CLICKED, self.onThumbnailClicked)
 
+    # Event handler that makes clicking a thumbnail update the dropdown menu
     def onThumbnailClicked(self, event):
         """
         Relay event to sibling panel
@@ -104,7 +104,7 @@ class panelGridView(wx.ScrolledWindow):
         event.Skip()
 
     # Changes number of monitor thumbnails.
-    # Should be all done for this class.
+    # Should be working
     def updateMonitors(self, old, now):
             diff = old - now
             self.gridSize = now
@@ -113,20 +113,23 @@ class panelGridView(wx.ScrolledWindow):
                 if diff < 0:
                     # Adding monitors to grid
                     i += 1
+                    # Make a new thumbnail and add to list
                     self.previewPanels.append ( thumbnailPanel(self, monitor_number=old,
                         thumbnailSize = self.thumbnailSize) )
+                    # Add thumbnail to layout
                     self.grid_mainSizer.Add(self.previewPanels[old])
                     self.grid_mainSizer.Layout()
-                    self.grid_mainSizer.Show(old)
                     old += 1
                 elif diff > 0:
                     # Removing monitors from grid
                     i -= 1
+                    # Remove last thumbnail from list
                     self.previewPanels.pop(len(self.previewPanels)-1)
+                    # Remove last thumbnail from layout
                     self.grid_mainSizer.Hide(old-1)
                     self.grid_mainSizer.Remove(old-1)
-                    old -= 1
                     self.grid_mainSizer.Layout()
+                    old -= 1
 
     # Changes thumbnail sizes.
     def updateThumbs(self, old, new):
@@ -135,9 +138,9 @@ class panelGridView(wx.ScrolledWindow):
             self.previewPanels[i].SetThumbnailsize(new)
             self.grid_mainSizer.Layout()
 
-
 class panelConfigure(wx.Panel):
     """
+    The lower half of panel one with the configuration settings
     """
     def __init__(self, parent):
         """
@@ -262,6 +265,7 @@ class panelConfigure(wx.Panel):
         self.SetSizer(lowerSizer)
         self.Bind(EVT_THUMBNAIL_CLICKED, self.onThumbnailClicked)
 
+    # Returns the selected source type and its value
     def __getSource(self):
         """
         check which source is ticked and what is the associated value
