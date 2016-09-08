@@ -48,7 +48,11 @@ class pvg_OptionsPanel(wx.Dialog):
 
         all_keys = [k for k in options.defaultOptions]
         key = all_keys[0]
-        default_value = str(options.defaultOptions[key][0])
+        print key
+        try:
+            default_value = str(options.GetOption(key))
+        except:
+            default_value = str(options.defaultOptions[key][0])
         text = options.defaultOptions[key][1]
         all_values = [str(options.GetOption(key)) for key in all_keys]
         self.values = dict( [ (key, value) for (key, value) in zip(all_keys, all_values)] )
@@ -91,21 +95,18 @@ class pvg_OptionsPanel(wx.Dialog):
 
         self.SetSizer(mainSizer) # The entire dialog displays mainSizer
 
+    # Event handler for editing a valueS
     def onChangeValues(self, event):
-        """
-        """
         key = self.theTitle.GetLabel()
         self.values[key] = event.GetString()
 
+    # Event handler for choosing different area in side menu
     def onSelect(self, event):
-        """
-        """
         key = event.GetString()
         self.updatePanel(key)
 
+    # Switch to a different set of options
     def updatePanel(self, key):
-        """
-        """
         default_value = str(options.defaultOptions[key][0])
         text = options.defaultOptions[key][1]
         act_value = self.values[key]
@@ -114,19 +115,16 @@ class pvg_OptionsPanel(wx.Dialog):
         self.Description.SetLabel('\n%s.\nDefault value = %s' % (text, default_value))
         self.Input.SetValue(act_value)
 
+    # Save options to cfg file
     def onSave(self):
         keys = [key for key in options.defaultOptions]
-
         for k in keys:
             v = self.values[k]
             v = v.replace('(',''); v = v.replace(')','')
             options.SetValue('Options', k, v)
 
         options.Save()
-        #self.parent.Close()
-
-"""    def onCancel(self, event):
-        self.parent.Destroy()"""
+        #self.parent.Close() now handled in pvg.py
 
 class optionsFrame(wx.Frame):
     def __init__(self, *args, **kwargs):

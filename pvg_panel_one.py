@@ -32,7 +32,6 @@ class thumbnailPanel(previewPanel):
     """
     A small preview Panel to be used as thumbnail
     """
-
     def __init__( self, parent, monitor_number, thumbnailSize=(320,240) ):
         previewPanel.__init__(self, parent, size=thumbnailSize, keymode=False)
 
@@ -43,7 +42,7 @@ class thumbnailPanel(previewPanel):
 
         self.Bind(wx.EVT_LEFT_UP, self.onLeftClick)
 
-
+    # Displays the monitor number over top of the thumbnail
     def displayNumber(self):
         """
         """
@@ -57,6 +56,7 @@ class thumbnailPanel(previewPanel):
         text1 = wx.StaticText( self, wx.ID_ANY, '%s' % (self.number+1), pos)
         text1.SetFont(font1)
 
+    # Event handler for thumbnail being clicked on
     def onLeftClick(self, evt):
         """
         Send signal around that the thumbnail was clicked
@@ -69,33 +69,33 @@ class thumbnailPanel(previewPanel):
 
         self.GetEventHandler().ProcessEvent(event)
 
-
-
 class panelGridView(wx.ScrolledWindow):
     """
+    The scrollable grid of monitor thumbnails on panel one
     """
     def __init__(self, parent, gridSize, thumbnailSize=(320,240) ):
-        """
-        """
+        # Set up scrolling window
         wx.ScrolledWindow.__init__(self, parent, wx.ID_ANY, size=(-1,600))
         self.SetScrollbars(1, 1, 1, 1)
         self.SetScrollRate(10, 10)
+
         self.parent = parent
         self.thumbnailSize = thumbnailSize
-
         self.grid_mainSizer = wx.GridSizer(6,3,2,2)
 
         #Populate the thumbnail grid
         self.previewPanels = []
-        for i in range (int(gridSize)):
+        for i in range(0, int(gridSize)):
             self.previewPanels.append ( thumbnailPanel(self, monitor_number=i,
                 thumbnailSize=self.thumbnailSize) )
-            self.grid_mainSizer.Add(self.previewPanels[i])#, 0, wx.EXPAND|wx.FIXED_MINSIZE, 0)
+            self.grid_mainSizer.Add(self.previewPanels[i])
 
+        # Make elements visible in UI
         self.SetSizer(self.grid_mainSizer)
-
+        # Set up listener for clicking on thumbnails
         self.Bind(EVT_THUMBNAIL_CLICKED, self.onThumbnailClicked)
 
+    # Event handler that makes clicking a thumbnail update the dropdown menu
     def onThumbnailClicked(self, event):
         """
         Relay event to sibling panel
@@ -103,36 +103,44 @@ class panelGridView(wx.ScrolledWindow):
         wx.PostEvent(self.parent.lowerPanel, event)
         event.Skip()
 
+    # Changes number of monitor thumbnails.
+    # Should be working
     def updateMonitors(self, old, now):
             diff = old - now
             self.gridSize = now
             i = diff
-            j = 0
             while i != 0:
                 if diff < 0:
                     # Adding monitors to grid
                     i += 1
-                    self.previewPanels.append ( thumbnailPanel(self, monitor_number=old+j, thumbnailSize = self.thumbnailSize) )
-                    self.grid_mainSizer.Add(self.previewPanels[old+j])
+                    # Make a new thumbnail and add to list
+                    self.previewPanels.append ( thumbnailPanel(self, monitor_number=old,
+                        thumbnailSize = self.thumbnailSize) )
+                    # Add thumbnail to layout
+                    self.grid_mainSizer.Add(self.previewPanels[old])
                     self.grid_mainSizer.Layout()
-                    j += 1
+                    old += 1
                 elif diff > 0:
                     # Removing monitors from grid
                     i -= 1
+                    # Remove last thumbnail from list
+                    self.previewPanels.pop(len(self.previewPanels)-1)
+                    # Remove last thumbnail from layout
                     self.grid_mainSizer.Hide(old-1)
                     self.grid_mainSizer.Remove(old-1)
-                    old -= 1
                     self.grid_mainSizer.Layout()
+                    old -= 1
 
+    # Changes thumbnail sizes.
     def updateThumbs(self, old, new):
         self.thumbnailSize = new
         for i in range(0, self.gridSize):
             self.previewPanels[i].SetThumbnailsize(new)
             self.grid_mainSizer.Layout()
 
-
 class panelConfigure(wx.Panel):
     """
+    The lower half of panel one with the configuration settings
     """
     def __init__(self, parent):
         """
@@ -257,6 +265,7 @@ class panelConfigure(wx.Panel):
         self.SetSizer(lowerSizer)
         self.Bind(EVT_THUMBNAIL_CLICKED, self.onThumbnailClicked)
 
+    # Returns the selected source type and its value
     def __getSource(self):
         """
         check which source is ticked and what is the associated value
@@ -269,6 +278,7 @@ class panelConfigure(wx.Panel):
 
         return source, sourceType
 
+    # Returns whether we are tracking distance, vbs, or xy coords
     def __getTrackingType(self):
         """
         return which tracking we are chosing
@@ -280,50 +290,54 @@ class panelConfigure(wx.Panel):
 
         return trackType
 
+    # Event handler for the play button
     def onPlay (self, event=None):
-        """
-        """
         if self.thumbnail:
             self.thumbnail.Play()
             self.btnStop.Enable(True)
 
+    # Event handler for the stop button
     def onStop (self, event=None):
-        """
-        """
         if self.thumbnail and self.thumbnail.isPlaying:
             self.thumbnail.Stop()
             self.btnStop.Enable(False)
 
+    # Event handler for changing monitor via clicking on thumbnail
     def onThumbnailClicked(self, evt):
         """
         Picking thumbnail by clicking on it
         """
-        self.monitor_number = evt.number + 1
+        self.monitor_number = evt.number #+ 1
         self.thumbnail = evt.thumbnail
-        self.thumbnailNumber.SetValue(self.MonitorList[self.monitor_number -1 ])
+        self.thumbnailNumber.SetValue(self.MonitorList[self.monitor_number]) # -1
         self.updateThumbnail()
 
+    # Event handler for changing monitor via dropdown box
     def onChangingMonitor(self, evt):
         """
         Picking thumbnail by using the dropbox
         """
         sel = evt.GetString()
-        self.monitor_number = self.MonitorList.index(sel) + 1
+        self.monitor_number = self.MonitorList.index(sel) #+ 1
         self.thumbnail = self.parent.scrollThumbnails.previewPanels[self.monitor_number]         #this is not very elegant
         self.updateThumbnail()
 
+    # Refresh thumbnail and controls
     def updateThumbnail(self):
         """
         Refreshing thumbnail data
         """
+        # If monitor exists, get info. Else, set to null/default values.
         if options.HasMonitor(self.monitor_number):
             sourceType, source, track, mask_file, trackType, isSDMonitor = options.GetMonitor(self.monitor_number)
         else:
             sourceType, source, track, mask_file, trackType, isSDMonitor = [0, '', False, '', 1, False]
 
+        # If monitor is playing a camera
         if sourceType == 0 and source != '':
             source = self.WebcamsList[source]
 
+        # Ensure source and type match throughout program
         self.source = self.thumbnail.source = source
         self.sourceType = self.thumbnail.sourceType = sourceType
         self.thumbnail.track = track
@@ -353,20 +367,15 @@ class panelConfigure(wx.Panel):
         self.pickMaskBrowser.SetValue(mask_file or '')
         [self.trackDistanceRadio, self.trackVirtualBM, self.trackPosition][trackType].SetValue(True)
 
-
     def sourceCallback (self, event):
-        """
-        """
         self.applyButton.Enable(True)
 
-
+    # Event handler for source radio buttons
     def onChangeSource(self, event):
-        """
-
-        """
-
+        # Determine which radio button was selected
         radio_selected = event.GetEventObject()
 
+        # Enable the selected source, disable all others
         for radio, source in self.controls:
             if radio is radio_selected:
                 source.Enable(True)
@@ -375,28 +384,31 @@ class panelConfigure(wx.Panel):
 
         self.applyButton.Enable(True)
 
-
+    # Event handler for the Apply button on the lower left of panel one
     def onApplySource(self, event):
-        """
-        """
-
+        # Get source and mask info from the user's selections
         source, sourceType = self.__getSource()
         track = self.activateTracking.GetValue()
         self.mask_file = self.pickMaskBrowser.GetValue()
         self.trackType = self.__getTrackingType()
 
+        # If there exists a thumbnail
+        # Else statement belongs to inner if statement, not sure why it keeps dedenting
         if self.thumbnail:
+            if sourceType > 0:
+                camera = source # If source is a file, get file
+            else:
+                camera = self.WebcamsList.index(source) # Otherwise, check webcam list
 
-            if sourceType > 0: camera = source
-            else: camera = self.WebcamsList.index(source)
-
+            # Set the thumbnail's source to the source we have chosen
+            # Specify if it is webcam, file, etc
             self.thumbnail.source = camera
             self.thumbnail.sourceType = sourceType
 
             #Change the source text
             self.currentSource.SetValue( os.path.split(source)[1] )
 
-            #Set thumbnail's source
+            #Set thumbnail's monitor
             self.thumbnail.setMonitor(camera)
 
             #Enable buttons
@@ -407,12 +419,9 @@ class panelConfigure(wx.Panel):
             self.saveMonitorConfiguration()
 
     def saveMonitorConfiguration(self):
-        """
-        """
-
         options.SetMonitor(self.monitor_number,
                            self.thumbnail.sourceType,
-                           self.thumbnail.source, #self.thumbnail.source+1
+                           self.thumbnail.source, #self.thumbnail.source+1 in dev code
                            self.thumbnail.track,
                            self.mask_file,
                            self.trackType,
@@ -420,52 +429,63 @@ class panelConfigure(wx.Panel):
                            )
         options.Save()
 
-
     def onActivateTracking(self, event):
-        """
-        """
         if self.thumbnail:
             self.thumbnail.track = event.IsChecked()
 
     def onSDMonitor(self, event):
-        """
-        """
         if self.thumbnail:
             self.thumbnail.mon.isSDMonitor = event.IsChecked()
 
-    def updateMonitors(self, old, new):
-        self.MonitorList = ['Monitor %s' % (int(m) + 1) for m in range(new)]
+    # Updates the dropdown box of monitors on lower half of panel one
+    # Should be working
+    def updateMonitors(self, old, now):
+        # Generate new list of monitors
+        self.MonitorList = ['Monitor %s' % (int(m) + 1) for m in range(now)]
 
+        # Create a new combobox with the correct number of monitors
         self.thumbnailNumber = wx.ComboBox(self, -1, size=(-1,-1) ,
             choices=self.MonitorList, style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
         self.Bind (wx.EVT_COMBOBOX, self.onChangingMonitor, self.thumbnailNumber)
 
+        # Remove the old combobox and replace it with this new one
+        self.sbSizer_1.Hide(0)
         self.sbSizer_1.Remove(0)
         self.sbSizer_1.Insert(0, self.thumbnailNumber, 0, wx.ALIGN_CENTRE | wx.LEFT | wx.RIGHT | wx.TOP, 5)
-        self.sbSizer_1.Layout()
-        self.Layout()
 
-    def updateWebcams(self, old, new):
+        # Display UI changes
+        self.sbSizer_1.Layout()
+
+    # Updates the dropdown box of cameras on lower half of panel one
+    # Should be working
+    def updateWebcams(self, old, now):
+        # Generate the list of webcams
         self.WebcamsList = [ 'Webcam %s' % (int(w) +1) for w in range(new) ]
 
+        # Create a new combobox with correct number of webcams
         source1 = wx.ComboBox(self, -1, size=(285,-1) , choices = self.WebcamsList,
             style=wx.CB_DROPDOWN | wx.CB_READONLY | wx.CB_SORT)
         self.Bind(wx.EVT_COMBOBOX, self.sourceCallback, source1)
         source1.Enable(True)
 
+        # Create a new radio button to go with the combobox
         self.controls.remove(self.controls[0])
         rb1 = wx.RadioButton(self, -1, 'Camera', style=wx.RB_GROUP)
         self.Bind(wx.EVT_RADIOBUTTON, self.onChangeSource, rb1)
 
+        # Add the button and combobox to the controls list
         self.controls.insert(0, (rb1,source1))
 
+        # Remove the old ones from the layout and add the new ones
+        self.grid2.Hide(0)
         self.grid2.Remove(0)
         self.grid2.Insert(0, rb1)
+        self.grid2.Hide(1)
         self.grid2.Remove(1)
         self.grid2.Insert(1, source1)
 
+        # Show changes to UI
         self.grid2.Layout()
-        self.Layout()
 
 class panelOne(wx.Panel):
     """
@@ -473,9 +493,9 @@ class panelOne(wx.Panel):
     All the thumbnails
     """
     def __init__(self, parent):
-
         wx.Panel.__init__(self, parent)
 
+        # Retrieve settings
         self.monitor_number = options.GetOption("Monitors")
         self.tn_size = options.GetOption("ThumbnailSize")
         self.n_cams = options.GetOption("Webcams")
@@ -484,30 +504,36 @@ class panelOne(wx.Panel):
         self.source = ''
         self.sourceType = -1
 
+        # Create a grid of thumbnails and a configure panel
         self.scrollThumbnails = panelGridView(self, gridSize=self.monitor_number, thumbnailSize=self.tn_size)
         self.lowerPanel = panelConfigure(self)
 
+        # Display elements
         self.PanelOneSizer = wx.BoxSizer(wx.VERTICAL)
         self.PanelOneSizer.Add(self.scrollThumbnails, 1, wx.EXPAND, 0)
         self.PanelOneSizer.Add(self.lowerPanel, 0, wx.EXPAND, 0)
         self.SetSizer(self.PanelOneSizer)
 
-
     def StopPlaying(self):
-        """
-        """
         self.lowerPanel.onStop()
 
+    # Checks for changes to be made to UI and implements them.
     def onRefresh(self):
+        # Check number of monitors
         if self.monitor_number != options.GetOption("Monitors"):
             self.scrollThumbnails.updateMonitors(self.monitor_number, options.GetOption("Monitors"))
             self.lowerPanel.updateMonitors(self.monitor_number, options.GetOption("Monitors"))
             self.monitor_number = options.GetOption("Monitors")
+
+        # Check thumbnail size
         if self.tn_size != options.GetOption("ThumbnailSize"):
             self.scrollThumbnails.updateThumbs(self.tn_size, options.GetOption("ThumbnailSize"))
             self.tn_size = options.GetOption("ThumbnailSize")
+
+        # Check number of webcams
         if self.n_cams != options.GetOption("Webcams"):
             self.lowerPanel.updateWebcams(self.n_cams, options.GetOption("Webcams"))
             self.n_cams = options.GetOption("Webcams")
+
+        # Show changes to UI
         self.PanelOneSizer.Layout()
-        self.Layout()
