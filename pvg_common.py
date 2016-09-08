@@ -153,6 +153,7 @@ class acquireObject():
         self.keepGoing = False
         self.verbose = False
         self.track = track
+        dataFolder = options.GetOption("Data_Folder")
         outputFile = os.path.join(dataFolder, 'Monitor%02d.txt' % monitor)
 
         self.mon = pv.Monitor()
