@@ -276,7 +276,7 @@ screen_height = GetSystemMetrics(1)
 # %% 
 if __name__ == "__main__":
 
-    app = wx.PySimpleApp(0)
+    app = wx.App()
     wx.InitAllImageHandlers()
     
     frame_1 = mainFrame(None, -1, "")           # Create the main window.

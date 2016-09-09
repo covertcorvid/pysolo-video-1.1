@@ -352,10 +352,11 @@ class previewPanel(wx.Panel):
 
         self.Bind( wx.EVT_LEFT_DOWN, self.onLeftDown )
         self.Bind( wx.EVT_LEFT_UP, self.onLeftUp )
-        self.Bind( wx.EVT_LEFT_DCLICK, self.AddPoint )
+        #self.Bind( wx.EVT_LEFT_DCLICK, self.AddPoint )
+        self.Bind( wx.EVT_LEFT_DCLICK, self.SaveCurrentSelection )
         self.Bind( wx.EVT_MOTION, self.onMotion )
         self.Bind( wx.EVT_RIGHT_DOWN, self.ClearLast )
-        self.Bind( wx.EVT_MIDDLE_DOWN, self.SaveCurrentSelection )
+        #self.Bind( wx.EVT_MIDDLE_DOWN, self.SaveCurrentSelection )
 
         if keymode:
             self.Bind( wx.EVT_CHAR, self.onKeyPressed )
@@ -474,17 +475,23 @@ class previewPanel(wx.Panel):
         if len(self.polyPoints) > 2:
             print "You need only two points for calibration. I am going to use the first two"
 
-        pt1, pt2 = self.polyPoints[0], self.polyPoints[1]
-        r = self.mon.calibrate(pt1, pt2)
-        self.polyPoints = []
+        if len(self.polyPoints) > 1:
+            pt1, pt2 = self.polyPoints[0], self.polyPoints[1]
+            r = self.mon.calibrate(pt1, pt2)
+            self.polyPoints = []
+        else:
+            print "You need at least two points for calibration."
 
         print "%spixels = 1cm" % r
 
     def AutoMask(self, event=None):
         """
         """
-        pt1, pt2 = self.polyPoints[0], self.polyPoints[1]
-        self.mon.autoMask(pt1, pt2)
+        if len(self.polyPoints > 1):
+            pt1, pt2 = self.polyPoints[0], self.polyPoints[1]
+            self.mon.autoMask(pt1, pt2)
+        else:
+            print "Too few points to automask"
         self.polyPoints = []
 
     def SaveMask(self, event=None):
