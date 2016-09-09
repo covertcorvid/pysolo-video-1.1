@@ -545,8 +545,8 @@ class previewPanel(wx.Panel):
     def onNextFrame(self, evt):
         """
         """
-
-        self.paintImg( self.mon.GetImage(drawROIs = self.drawROI, selection=self.selection, crosses=self.polyPoints, timestamp=self.timestamp) )
+        img = self.mon.GetImage(drawROIs = self.drawROI, selection=self.selection, crosses=self.polyPoints, timestamp=self.timestamp)
+        self.paintImg( img )
         if evt: evt.Skip()
 
     def Play(self, status=True, showROIs=True):

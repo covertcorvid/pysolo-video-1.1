@@ -172,6 +172,8 @@ class realCam(Cam):
 
         if self.scale:
             newsize = cv.CreateImage(self.resolution , cv.IPL_DEPTH_8U, 3)
+            if type(frame) != type(newsize):
+                return newsize
             cv.Resize(frame, newsize)
             frame = newsize
 
