@@ -8,10 +8,10 @@ fps_preview = 5
 monitors = 6
 
 [Monitor1]
-sourcetype = 0
-source = 0
+sourcetype = 1
+source = C:\Users\Lori\Documents\GitHub\pySolo-Video\fly_movie.avi
 track = True
-maskfile = /home/gg/Dropbox/myCode/pySolo-Video/Monitor_SD_1.msk
+maskfile = C:\Users\Lori\Documents\GitHub\pysolo-video-1.1\test.msk
 tracktype = 0
 issdmonitor = False
 
@@ -20,6 +20,14 @@ sourcetype = 0
 source = 2
 track = False
 maskfile = /home/gg/Dropbox/myCode/pySolo-Video/Monitor_SD_2.msk
+tracktype = 0
+issdmonitor = False
+
+[Monitor0]
+sourcetype = 1
+source = C:\Users\Lori\Documents\GitHub\pySolo-Video\fly_movie.avi
+track = True
+maskfile = C:\Users\Lori\Documents\GitHub\pysolo-video-1.1\test.msk
 tracktype = 0
 issdmonitor = False
 

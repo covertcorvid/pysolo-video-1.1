@@ -163,7 +163,7 @@ class mainFrame(wx.Frame):
 
         """ Connect the menu objects to their functions """
         wx.EVT_MENU(self, ID_FILE_OPEN, self.onFileOpen)
-        wx.EVT_MENU(self, ID_FILE_SAVE, self.onFileSave)
+#        wx.EVT_MENU(self, ID_FILE_SAVE, self.onFileSave)
         wx.EVT_MENU(self, ID_FILE_SAVE_AS, self.onFileSaveAs)
         # wx.EVT_MENU(self, ID_FILE_CLOSE, self.onFileClose)
         wx.EVT_MENU(self, ID_FILE_EXIT, self.onFileExit)
@@ -202,20 +202,25 @@ class mainFrame(wx.Frame):
         """
         filename = DEFAULT_CONFIG                   # see pvg_common.py
         
-        wildcard = "pySolo Video config file (*.cfg) | *.cfg" \
-                   "All files (*.*) | *.*"    # sets file types for save dialog
+        wildcard = "pySolo Video config file (*.cfg) | *.cfg | All files (*.*) | *.*"    # sets file types for save dialog
 
+        print("filename1 = " + filename)
         dlg = wx.FileDialog(                    # make a save window
             self, message="Save file as ...", defaultDir=os.getcwd(),
             defaultFile=filename, wildcard=wildcard, style=wx.SAVE
             )
 
+        print("filename2 = " + filename)
         #dlg.SetFilterIndex(2)
 
         if dlg.ShowModal() == wx.ID_OK:         # show the save window
             path = dlg.GetPath()
             options.Save(filename=path)
-
+            print("filename3 = "+ filename)
+        
+        print("filename4 = "+ filename)
+           
+            
         dlg.Destroy()
 
 # %%
