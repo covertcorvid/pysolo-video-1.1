@@ -150,7 +150,7 @@ class panelLiveView(wx.Panel):
         if self.fsPanel.isPlaying: self.fsPanel.Stop()
 
         self.monitor_name = event.GetString()
-        self.monitor_number = self.MonitorList.index( self.monitor_name ) + 1
+        self.monitor_number = self.MonitorList.index( self.monitor_name )
 
         n_cams = options.GetOption("Webcams")
         WebcamsList = [ 'Webcam %s' % (int(w) +1) for w in range( n_cams ) ]
