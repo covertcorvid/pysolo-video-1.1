@@ -24,7 +24,7 @@ import wx, cv, os
 import pysolovideo as pv
 import ConfigParser, threading
 
-DEFAULT_CONFIG = 'pysolo_video.cfg'
+DEFAULT_CONFIG = 'pysolo_video'
 
 class myConfig():
     """

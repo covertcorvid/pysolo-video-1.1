@@ -196,25 +196,29 @@ class mainFrame(wx.Frame):
 #        options.Save()                              # see pvg_common.py
 #
 # %%
-    def onFileSaveAs(self, event):                                              # keeps adding another .cfg to filename
-        """                                                                     # can't see .cfg or any other files when .cfg type is selected
+    def onFileSaveAs(self, event):                                              
+        """                                                                     
         Opens the save file window
         """
         filename = DEFAULT_CONFIG                   # see pvg_common.py
         
-        wildcard = "pySolo Video config file (*.cfg) | *.cfg | All files (*.*) | *.*"    # sets file types for save dialog
+        # set file types for find dialog
+        wildcard = "PySolo Video config file (*.cfg)|*.cfg|" \
+                 "All files (*.*)|*.*"    # adding space in here will mess it up!
+
 
         print("filename1 = " + filename)
         dlg = wx.FileDialog(                    # make a save window
             self, message="Save file as ...", defaultDir=os.getcwd(),
-            defaultFile=filename, wildcard=wildcard, style=wx.SAVE
+            defaultFile=filename, wildcard=wildcard, 
+            style=(wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
             )
 
         print("filename2 = " + filename)
         #dlg.SetFilterIndex(2)
 
         if dlg.ShowModal() == wx.ID_OK:         # show the save window
-            path = dlg.GetPath()
+            path = dlg.GetPath()                # gets the path from the save dialog
             options.Save(filename=path)
             print("filename3 = "+ filename)
         
@@ -228,7 +232,9 @@ class mainFrame(wx.Frame):
         """                                                                     # .cfg files don't show.  you can ask for it, but it doesn't load
         Opens the open file window                                              # no complaints about non-existent files
         """
-        wildcard = "pySolo Video config file (*.cfg)|*.cfg | All files (*.*)|*.*"    # sets file types for find dialog
+        #  set file types for find dialog
+        wildcard = "pySolo Video config file (*.cfg)|*.cfg|" \
+                   " All files (*.*)|*.*"    # don't add any spaces!
 
         dlg = wx.FileDialog(                    # make an open-file window
             self, message="Choose a file",
