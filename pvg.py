@@ -68,6 +68,7 @@ class mainNotebook(wx.Notebook):
         """
         Refreshes all pages of notebook.
         """
+        print('updateUI function')                                              # print debug
         self.panelOne.onRefresh()                    # see pvg_panel_one.py
         self.panelTwo.onRefresh()                    # see pvg_panel_two.py
         self.Layout()                                                           # where is layout()?
@@ -188,12 +189,12 @@ class mainFrame(wx.Frame):
         dlg.Destroy()
 
 # %%  
-    def onFileSave(self, event):
-        """
-        Calls the save function.
-        """
-        options.Save()                              # see pvg_common.py
-
+#    def onFileSave(self, event):                                               # what's the point of a one line function?
+#        """                                                                    # FUNCTION NOT IN USE
+#        Calls the save function.
+#        """
+#        options.Save()                              # see pvg_common.py
+#
 # %%
     def onFileSaveAs(self, event):                                              # keeps adding another .cfg to filename
         """                                                                     # can't see .cfg or any other files when .cfg type is selected
