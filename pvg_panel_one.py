@@ -71,9 +71,9 @@ class thumbnailPanel(previewPanel):
 
 class panelGridView(wx.ScrolledWindow):
     """
-    The scrollable grid of monitor thumbnails on panel one
+    The scrollable grid of monitor thumbnails on panel one                      # number in monitors not always there
     """
-    def __init__(self, parent, gridSize, thumbnailSize=(320,240) ):
+    def __init__(self, parent, gridSize, thumbnailSize=(320,240) ): 
         # Set up scrolling window
         wx.ScrolledWindow.__init__(self, parent, wx.ID_ANY, size=(-1,600))
         self.SetScrollbars(1, 1, 1, 1)
@@ -83,7 +83,7 @@ class panelGridView(wx.ScrolledWindow):
         self.thumbnailSize = thumbnailSize
         self.grid_mainSizer = wx.GridSizer(6,3,2,2)
 
-        #Populate the thumbnail grid
+        # Populate the thumbnail grid
         self.previewPanels = []
         for i in range(0, int(gridSize)):
             self.previewPanels.append ( thumbnailPanel(self, monitor_number=i,
@@ -138,9 +138,10 @@ class panelGridView(wx.ScrolledWindow):
             self.previewPanels[i].SetThumbnailsize(new)
             self.grid_mainSizer.Layout()
 
-class panelConfigure(wx.Panel):
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Panel Configuration
+class panelConfigure(wx.Panel):    
     """
-    The lower half of panel one with the configuration settings
+    The lower half of panel one with the configuration settings                 # this panel could be shorter to cover less of the monitors
     """
     def __init__(self, parent):
         """

@@ -38,7 +38,7 @@ Algorithm for motion analysis:          PIL through kmeans (vector quantization)
     http://stackoverflow.com/questions/3923906/kmeans-in-opencv-python-interface
 """
 
-import cv
+import cv2, cv
 import cPickle
 import os, datetime, time
 import numpy as np
@@ -243,6 +243,7 @@ class virtualCamMovie(Cam):
         if end < 1 or end > self.totalFrames: end = self.totalFrames
         self.lastFrame = end
 
+        print('video, ln 246, cv.createimage')                                  # print debug
         self.blackFrame = cv.CreateImage(self.resolution , cv.IPL_DEPTH_8U, 3)
         cv.Zero(self.blackFrame)
 
@@ -251,6 +252,7 @@ class virtualCamMovie(Cam):
         Return the time of the frame
         """
 
+        print('video ln 255, cv.getcaptureproperty')                            # print debug
         frameTime = cv.GetCaptureProperty(self.capture, cv.CV_CAP_PROP_POS_MSEC)
 
 
@@ -269,6 +271,7 @@ class virtualCamMovie(Cam):
 
         """
 
+        print('video, ln 274, cv. queryframe')                                  # print debug
         #cv.SetCaptureProperty(self.capture, cv.CV_CAP_PROP_POS_FRAMES, self.currentFrame)
         # this does not work properly. Image is very corrupted
         im = cv.QueryFrame(self.capture)

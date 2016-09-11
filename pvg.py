@@ -138,8 +138,7 @@ class mainFrame(wx.Frame):
         #filemenu. Append(ID_FILE_CLOSE, '&Close File', 
         #               'Close')
         filemenu. AppendSeparator()           # draws horizontal separater line
-        filemenu. Append(ID_FILE_EXIT, 'E&xit Program', 
-                         'Exit')
+        filemenu. Append(ID_FILE_EXIT, 'E&xit Program', 'Exit')
 
         """ Create options-menu objects """
         optmenu =  wx.Menu()
@@ -196,8 +195,8 @@ class mainFrame(wx.Frame):
         options.Save()                              # see pvg_common.py
 
 # %%
-    def onFileSaveAs(self, event):
-        """
+    def onFileSaveAs(self, event):                                              # keeps adding another .cfg to filename
+        """                                                                     # can't see .cfg or any other files when .cfg type is selected
         Opens the save file window
         """
         filename = DEFAULT_CONFIG                   # see pvg_common.py
@@ -224,12 +223,11 @@ class mainFrame(wx.Frame):
         dlg.Destroy()
 
 # %%
-    def onFileOpen(self, event):
+    def onFileOpen(self, event):                                                # viewing all files is not an option
+        """                                                                     # .cfg files don't show.  you can ask for it, but it doesn't load
+        Opens the open file window                                              # no complaints about non-existent files
         """
-        Opens the open file window
-        """
-        wildcard = "pySolo Video config file (*.cfg)|*.cfg" \
-                   "All files (*.*) | *.*"    # sets file types for find dialog
+        wildcard = "pySolo Video config file (*.cfg)|*.cfg | All files (*.*)|*.*"    # sets file types for find dialog
 
         dlg = wx.FileDialog(                    # make an open-file window
             self, message="Choose a file",
@@ -278,7 +276,7 @@ Set global variables:
 screen_width = GetSystemMetrics(0)   # get the screen resolution of this monitor
 screen_height = GetSystemMetrics(1) 
  
-# %% 
+
 if __name__ == "__main__":
 
     app = wx.App()

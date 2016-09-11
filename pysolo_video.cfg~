@@ -1,31 +1,31 @@
 [Options]
-webcams = 3
-data_folder = /home/gg/Desktop/videoDAM
+webcams = 1
+data_folder = c:\users\Lori\documents\GitHub\data_folder
 thumbnailsize = 320, 240
 fullsize = 640, 480
 fps_recording = 5
 fps_preview = 5
-monitors = 6
+monitors = 3
 
 [Monitor1]
 sourcetype = 1
-source = C:\Users\Lori\Documents\GitHub\pySolo-Video\fly_movie.avi
+source = C:\Users\Lori\Documents\GitHub\pachebell.mp4
 track = True
 maskfile = C:\Users\Lori\Documents\GitHub\pysolo-video-1.1\test.msk
 tracktype = 0
 issdmonitor = False
 
 [Monitor2]
-sourcetype = 0
-source = 2
+sourcetype = 1
+source = C:\Users\Lori\Documents\GitHub\pachebell.mp4
 track = False
-maskfile = /home/gg/Dropbox/myCode/pySolo-Video/Monitor_SD_2.msk
+maskfile = C:\Users\Lori\Documents\GitHub\pysolo-video-1.1\test.msk
 tracktype = 0
 issdmonitor = False
 
 [Monitor0]
 sourcetype = 1
-source = C:\Users\Lori\Documents\GitHub\pySolo-Video\fly_movie.avi
+source = C:\Users\Lori\Documents\GitHub\fly_movie.avi
 track = True
 maskfile = C:\Users\Lori\Documents\GitHub\pysolo-video-1.1\test.msk
 tracktype = 0
