@@ -546,6 +546,7 @@ class Arena():
             return (xm, y1), (xm, y2)
         else:
             ym = y1 + (y2 - y1)/2
+
             return (x1, ym), (x2, ym)
 
     def calibrate(self, p1, p2, cm=1):
