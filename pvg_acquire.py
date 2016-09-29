@@ -803,9 +803,14 @@ class acquireFrame(wx.Frame):
     def loadConfig(self, filename=None):
         """
         """
-        if filename is None:
-            pDir = os.environ['HOME']
-            filename = os.path.join (pDir, DEFAULT_CONFIG)
+        print('loadConfig '+filename)
+        if ~os.path.isfile(filename):
+            
+#        if filename is None:
+#            print(os.environ['HOME'])
+#            pDir = os.environ['HOME']
+#            filename = os.path.join (pDir, DEFAULT_CONFIG)
+            filename = DEFAULT_CONFIG
 
         self.acq_panel.loadFile(filename)
 
@@ -827,9 +832,8 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
 
-
     app=wx.PySimpleApp(0)
-    frame_acq = acquireFrame(None, -1, '')
+    frame_acq = acquireFrame(None, -1, "")           # Create the main window.
     app.SetTopWindow(frame_acq)
     frame_acq.Show(options.showgui)
 

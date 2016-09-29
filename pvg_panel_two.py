@@ -108,8 +108,9 @@ class panelLiveView(wx.Panel):
         titleFont = wx.Font(10, wx.SWISS, wx.NORMAL, wx.BOLD)
         instr = [ ('Left mouse button - single click outside ROI', 'Start dragging ROI. ROI will be a perfect rectangle'),
                   ('Left mouse button - single click inside ROI', 'Select ROI. ROI turns red.'),
-                  ('Left mouse button - double click', 'Select corner of ROI.\nWill close ROI after fourth selection'),
-                  ('Middle mouse button - single click', 'Add currently selected ROI. ROI turns white.'),
+#                  ('Left mouse button - double click', 'Select corner of ROI.\nWill close ROI after fourth selection'),
+                  ('Left mouse button - double click', 'Add currently selected ROI. ROI turns white.'),
+#                  ('Middle mouse button - single click', 'Add currently selected ROI. ROI turns white.'),
                   ('Right mouse button - click', 'Remove selected currently selected ROI'),
                   ('Auto Fill', 'Will fill 32 ROIS (16x2) to fit under the last two\nselected points. To use select first upper left corner,\n then the lower right corner, then use "Auto Fill".')
                   ]
