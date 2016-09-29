@@ -24,6 +24,7 @@ import wx, cv, os
 import pysolovideo as pv
 import ConfigParser, threading
 
+DEFAULT_CONFIG = 'pysolo_video'
 
 class myConfig():
     """
@@ -37,19 +38,11 @@ class myConfig():
         temporary   whether we are reading and storing values temporarily
         defaultOptions  a dict containing the defaultOptions
         """
-        DEFAULT_CONFIG = 'pysolo_video'
-        if ~os.path.isfile(DEFAULT_CONFIG):         # if the default file doesn't exist, have user identify one.
-            dialog = wx.FileDialog(self, "Choose the configuration file...", 
-                                  os.getcwd(), "", "CFG files (*.cfg)",
-                                   wx.FD_OPEN)
-            if dialog.ShowModal() == wx.ID_OK:
-                DEFAULT_CONFIG = dialog.GetPaths()
-            dialog.Destroy()
 
         filename = filename or DEFAULT_CONFIG
         pDir = os.getcwd()
         if not os.access(pDir, os.W_OK): pDir = os.environ['HOME']
-
+        print(pdir + filename)
         self.filename = os.path.join (pDir, filename)
         self.filename_temp = '%s~' % self.filename
 

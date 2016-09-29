@@ -831,13 +831,15 @@ if __name__ == '__main__':
     parser.add_option('--nogui', action="store_false", default=True, dest='showgui', help="Do not show the graphical interface")
 
     (options, args) = parser.parse_args()
-
+    print('main')
     app=wx.PySimpleApp(0)
     frame_acq = acquireFrame(None, -1, "")           # Create the main window.
     app.SetTopWindow(frame_acq)
     frame_acq.Show(options.showgui)
 
     configfile = options.config_file or DEFAULT_CONFIG
+
+    print(configfile)    
     cfgloaded = frame_acq.loadConfig(configfile)
 
     if cfgloaded and options.acquire:
