@@ -803,9 +803,14 @@ class acquireFrame(wx.Frame):
     def loadConfig(self, filename=None):
         """
         """
-        if filename is None:
-            pDir = os.environ['HOME']
-            filename = os.path.join (pDir, DEFAULT_CONFIG)
+        print('loadConfig '+filename)
+        if ~os.path.isfile(filename):
+            
+#        if filename is None:
+#            print(os.environ['HOME'])
+#            pDir = os.environ['HOME']
+#            filename = os.path.join (pDir, DEFAULT_CONFIG)
+            filename = DEFAULT_CONFIG
 
         self.acq_panel.loadFile(filename)
 
@@ -826,14 +831,15 @@ if __name__ == '__main__':
     parser.add_option('--nogui', action="store_false", default=True, dest='showgui', help="Do not show the graphical interface")
 
     (options, args) = parser.parse_args()
-
-
+    print('main')
     app=wx.PySimpleApp(0)
-    frame_acq = acquireFrame(None, -1, '')
+    frame_acq = acquireFrame(None, -1, "")           # Create the main window.
     app.SetTopWindow(frame_acq)
     frame_acq.Show(options.showgui)
 
     configfile = options.config_file or DEFAULT_CONFIG
+
+    print(configfile)    
     cfgloaded = frame_acq.loadConfig(configfile)
 
     if cfgloaded and options.acquire:

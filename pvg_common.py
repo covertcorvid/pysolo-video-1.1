@@ -24,7 +24,7 @@ import wx, cv, os
 import pysolovideo as pv
 import ConfigParser, threading
 
-DEFAULT_CONFIG = 'pysolo_video.cfg'
+DEFAULT_CONFIG = 'pysolo_video'
 
 class myConfig():
     """
@@ -42,7 +42,7 @@ class myConfig():
         filename = filename or DEFAULT_CONFIG
         pDir = os.getcwd()
         if not os.access(pDir, os.W_OK): pDir = os.environ['HOME']
-
+        print(pdir + filename)
         self.filename = os.path.join (pDir, filename)
         self.filename_temp = '%s~' % self.filename
 
@@ -509,7 +509,6 @@ class previewPanel(wx.Panel):
         self.resolution = resolution
         self.mon = pv.Monitor()
 
-        print('common, ln 512, cv.createmat')                                   #print debug
         frame = cv.CreateMat(self.size[1], self.size[0], cv.CV_8UC3)
         self.bmp = wx.BitmapFromBuffer(self.size[0], self.size[1], frame.tostring())
 
@@ -523,8 +522,7 @@ class previewPanel(wx.Panel):
         """
         if img:
             depth, channels = img.depth, img.nChannels
-
-            print('common, ln 527, cv.cv_maketype')                             # print debug
+            print('common, ln 527, cv.cv_maketype')
             datatype = cv.CV_MAKETYPE(depth, channels)
 
             frame = cv.CreateMat(self.size[1], self.size[0], datatype)
