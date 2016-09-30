@@ -42,7 +42,7 @@ class myConfig():
         filename = filename or DEFAULT_CONFIG
         pDir = os.getcwd()
         if not os.access(pDir, os.W_OK): pDir = os.environ['HOME']
-        print(pdir + filename)
+        print(pDir + filename)
         self.filename = os.path.join (pDir, filename)
         self.filename_temp = '%s~' % self.filename
 
