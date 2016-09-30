@@ -39,6 +39,7 @@ import wx.grid as gridlib
 # Not present in dev version
 class customDataTable(gridlib.PyGridTableBase):
     def __init__(self, colLabels, dataTypes, useValueCleaner=True):
+        print('customdatatable init')                                             # debug
         gridlib.PyGridTableBase.__init__(self)
         self.useValueCleaner = useValueCleaner
         self.colLabels = colLabels
@@ -49,21 +50,25 @@ class customDataTable(gridlib.PyGridTableBase):
     # required methods for the wxPyGridTableBase interface
 
     def GetNumberRows(self):
+        print('customDataTable getnumberrows')                                                    # debug
         try:
             return len(self.data)
         except:
             return 0
 
     def GetNumberCols(self):
+        print('customDataTable getnumbercols')                                                    # debug
         return len (self.colLabels)
 
     def IsEmptyCell(self, row, col):
+        print('customDataTable isemptycell')                                                      # debug
         try:
             return not self.data[row][col]
         except IndexError:
             return True
 
     def Reset(self, colLabels, dataTypes):
+        print('customDataTable reset')                                                          # debug
         """
         Re-initialise the table
         reset(colLabels, dataTypes)
@@ -82,6 +87,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def ClearTable(self):
+        print('customDataTable cleartable')                                                     # debug
         """
         Clear the table
         """
@@ -93,6 +99,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def GetValue(self, row, col):
+        print('customDataTable getvalue')                                                       # debug
         """
         (row, col)
         Get value at given coordinates
@@ -103,6 +110,7 @@ class customDataTable(gridlib.PyGridTableBase):
             return ''
 
     def InsertColumn(self, col_pos, col_type=gridlib.GRID_VALUE_FLOAT+':6,2', col_label=''):
+        print('customDataTable insertcolumn')                                                   # debug
         """
         Add one grid column before col_pos, with type set to col_type and label col_label
         """
@@ -126,6 +134,7 @@ class customDataTable(gridlib.PyGridTableBase):
                 col_pos, 1         ))
 
     def Sort(self, bycols, descending=False):
+        print('customDataTable sort')                                                           # debug
         """
         sort the table by multiple columns
             bycols:  a list (or tuple) specifying the column numbers to sort by
@@ -150,6 +159,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def AddRow (self, rows):
+        print('customDataTable addrow')                                                         # debug
         """
         Add one or more rows at the bottom of the table / sheet
         row can be an array of values or a 2-dimenstional array of rows and values
@@ -171,6 +181,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def RemRow (self, rows):
+        print('customDataTable remrow')                                                         # debug
         """
         Remove one or more rows
         """
@@ -184,6 +195,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def SetData(self, data=None):
+        print('customDataTable setdata')                                                        # debug
         """
         Set the whole content of the table to data
         """
@@ -201,6 +213,7 @@ class customDataTable(gridlib.PyGridTableBase):
                 gridlib.GRIDTABLE_REQUEST_VIEW_GET_VALUES))
 
     def SetRow (self, row, data):
+        print('customDataTable setrow')                                                         # debug
         data = self.cleanFromMask(data)
         try:
             self.data[row] = data
@@ -208,6 +221,7 @@ class customDataTable(gridlib.PyGridTableBase):
             self.AddRow(data)
 
     def SetValue(self, row, col, value):
+        print('customDataTable setvalue')                                                       # debug
         """
         (row, col, value)
         Set Value for cell at given coordinates
@@ -231,11 +245,13 @@ class customDataTable(gridlib.PyGridTableBase):
         """
         Called when the grid needs to display labels
         """
+        print('customDataTable GetColLabelValue')                               # debug                                             # debug
         return self.colLabels[col]
 
 
 
     def GetTypeName(self, row, col):
+        print('customDataTable gettypename')                                                    # debug
         """
         Called to determine the kind of editor/renderer to use by
         default, doesn't necessarily have to be the same type used
@@ -245,6 +261,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def CanGetValueAs(self, row, col, typeName):
+        print('customDataTable cangetvalueas')                                   # debug
         """
         Called to determine how the data can be fetched and stored by the
         editor and renderer.  This allows you to enforce some type-safety
@@ -257,9 +274,11 @@ class customDataTable(gridlib.PyGridTableBase):
             return False
 
     def CanSetValueAs(self, row, col, typeName):
+        print('customDataTable cansetvalueas')                                  # debug
         return self.CanGetValueAs(row, col, typeName)
 
     def cleanFromMask(self, l):
+        print('customDataTable cleanfrommask')                                  # debug
         """
         Goes through the list l and make sure it doesn't contain
         any masked value
@@ -416,6 +435,7 @@ class CustTableGrid(gridlib.Grid):
             pass
 
     def AddRow(self, *kargs, **kwargs):
+        print('addrow')                                                         # debug
         """
         Add one or more rows at the bottom of the table / sheet
         row can be an array of values or a 2-dimenstional array of rows and values
