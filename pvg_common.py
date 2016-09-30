@@ -283,7 +283,7 @@ class pvg_config(myConfig):
         resolution = self.GetOption('FullSize')
         dataFolder = self.GetOption('Data_Folder')
 
-        for mon in range(1,ms+1):
+        for mon in range(0,ms):
             if self.HasMonitor(mon):
                 _,source,track,mask_file,track_type,isSDMonitor = self.GetMonitor(mon)
                 monitors[mon] = {}
@@ -523,7 +523,7 @@ class previewPanel(wx.Panel):
         """
         if img:
             depth, channels = img.depth, img.nChannels
-            
+
             print('common, ln 527, cv.cv_maketype')                             # print debug
             datatype = cv.CV_MAKETYPE(depth, channels)
 

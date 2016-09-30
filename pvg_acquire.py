@@ -747,8 +747,8 @@ class pvg_AcquirePanel(wx.Panel):
                 s = 'Camera %02d' % ( m['source'] + 1 )
 
             mf = os.path.split(m['mask_file'])[1]
-            df = 'Monitor%02d.txt' % (mn)
-            row = [mn, s, mf, df, m['track_type'], m['track'] ]
+            df = 'Monitor%02d.txt' % (mn+1)
+            row = [mn+1, s, mf, df, m['track_type'], m['track'] ]
             self.grid.AddRow(row)
 
 
