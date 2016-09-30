@@ -132,7 +132,10 @@ class myConfig():
             try:
                 r = int(r[0]) #int as text
             except:
-                r = r[0] #string
+                if len(r) > 0:
+                    r = r[0] #string
+                else:
+                    r = ""
 
         if r == 'False' or r == 'True':
             r = (r == 'True') #bool
