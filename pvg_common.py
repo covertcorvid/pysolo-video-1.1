@@ -19,7 +19,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-
+import inspect
 import wx, cv, os
 import pysolovideo as pv
 import ConfigParser, threading
@@ -33,6 +33,7 @@ class myConfig():
     From gg's toolbox
     """
     def __init__(self, filename=None, temporary=False, defaultOptions=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         filename    the name of the configuration file
         temporary   whether we are reading and storing values temporarily
@@ -57,12 +58,14 @@ class myConfig():
         self.Read(temporary)
 
     def New(self, filename):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.filename = filename
         self.Read()
 
     def Read(self, temporary=False):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         read the configuration file. Initiate one if does not exist
 
@@ -82,6 +85,7 @@ class myConfig():
 
 
     def Save(self, temporary=False, newfile=False, filename=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
 
@@ -102,6 +106,7 @@ class myConfig():
 
 
     def SetValue(self, section, key, value):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
 
@@ -111,6 +116,7 @@ class myConfig():
         self.config.set(section, key, value)
 
     def GetValue(self, section, key):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         get value from config file
         Does some sanity checking to return tuple, integer and strings
@@ -144,17 +150,19 @@ class myConfig():
 
 
     def GetOption(self, key):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         return self.GetValue('Options', key)
 
 class acquireObject():
     def __init__(self, monitor, source, resolution, mask_file, track, track_type, dataFolder):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.monitor = monitor
         self.keepGoing = False
-        self.verbose = False
+        self.verbose = True                                                        # false turns off debug
         self.track = track
         dataFolder = options.GetOption("Data_Folder")
         outputFile = os.path.join(dataFolder, 'Monitor%02d.txt' % monitor)
@@ -163,25 +171,28 @@ class acquireObject():
         self.mon.setSource(source, resolution)
         self.mon.setTracking(True, track_type, mask_file, outputFile)
 
-        if self.verbose: print ( "Setting monitor %s with source %s and mask %s. Output to %s " % (monitor, source, os.path.split(mask_file)[1], os.path.split(outputFile)[1] ) )
+        if self.verbose: print ( "Verbose - Setting monitor %s with source %s and mask %s. Output to %s " % (monitor, source, os.path.split(mask_file)[1], os.path.split(outputFile)[1] ) )
 
     def run(self, kbdint=False):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         while self.keepGoing:
             self.mon.GetImage()
 
     def start(self):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.keepGoing = True
         self.run()
 
     def halt(self):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.keepGoing = False
-        if self.verbose: print ( "Stopping capture" )
+        if self.verbose: print ( "Verbose: Stopping capture" )
 
 
 
@@ -189,12 +200,13 @@ class acquireObject():
 class acquireThread(threading.Thread):
 
     def __init__(self, monitor, source, resolution, mask_file, track, track_type, dataFolder):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         threading.Thread.__init__(self)
         self.monitor = monitor
         self.keepGoing = False
-        self.verbose = False
+        self.verbose = True
         self.track = track
         outputFile = os.path.join(dataFolder, 'Monitor%02d.txt' % monitor)
 
@@ -202,9 +214,10 @@ class acquireThread(threading.Thread):
         self.mon.setSource(source, resolution)
         self.mon.setTracking(True, track_type, mask_file, outputFile)
 
-        if self.verbose: print ( "Setting monitor %s with source %s and mask %s. Output to %s " % (monitor, source, os.path.split(mask_file)[1], os.path.split(outputFile)[1] ) )
+        if self.verbose: print ( "Verbose2: Setting monitor %s with source %s and mask %s. Output to %s " % (monitor, source, os.path.split(mask_file)[1], os.path.split(outputFile)[1] ) )
 
     def run(self, kbdint=False):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
 
@@ -221,23 +234,26 @@ class acquireThread(threading.Thread):
                 self.mon.GetImage()
 
     def doTrack(self):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.keepGoing = True
         self.start()
 
     def halt(self):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.keepGoing = False
-        if self.verbose: print ( "Stopping capture" )
+        if self.verbose: print ( "Verbose3: Stopping capture" )
 
 class pvg_config(myConfig):
     """
     Inheriting from myConfig
     """
     def __init__(self, filename=None, temporary=False):
-
+#        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+#        print(' inspect not working in pvg_config __init__')                                   # debug
 
         defaultOptions = { "Monitors" : [9, "Select the number of monitors connected to this machine"],
                             "Webcams"  : [1, "Select the number of webcams connected to this machine"],
@@ -249,10 +265,12 @@ class pvg_config(myConfig):
                            }
 
         self.monitorProperties = ['sourceType', 'source', 'track', 'maskfile', 'trackType', 'isSDMonitor']
+#        print(self.monitorProperties)
 
         myConfig.__init__(self, filename, temporary, defaultOptions)
 
     def SetMonitor(self, monitor, *args):
+#        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         mn = 'Monitor%s' % monitor
@@ -260,6 +278,7 @@ class pvg_config(myConfig):
             self.SetValue(mn, vn, v)
 
     def GetMonitor(self, monitor):
+#        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         mn = 'Monitor%s' % monitor
@@ -270,12 +289,14 @@ class pvg_config(myConfig):
         return md
 
     def HasMonitor(self, monitor):
+#        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         mn = 'Monitor%s' % monitor
         return self.config.has_section(mn)
 
     def getMonitorsData(self):
+#        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         return a list containing the monitors that we need to track
         based on info found in configfile
@@ -308,6 +329,7 @@ class previewPanel(wx.Panel):
     Used for thumbnails
     """
     def __init__(self, parent, size, keymode=True):
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
 
         wx.Panel.__init__(self, parent, wx.ID_ANY, style=wx.WANTS_CHARS)
 
@@ -366,12 +388,14 @@ class previewPanel(wx.Panel):
             self.SetFocus()
 
     def ClearAll(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Clear all ROIs
         """
         self.mon.delROI(-1)
 
     def ClearLast(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Cancel current drawing
         """
@@ -385,6 +409,7 @@ class previewPanel(wx.Panel):
                 self.selROI = -1
 
     def SaveCurrentSelection(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         save current selection
         """
@@ -394,6 +419,7 @@ class previewPanel(wx.Panel):
             self.polyPoints = []
 
     def AddPoint(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Add point
         """
@@ -412,6 +438,7 @@ class previewPanel(wx.Panel):
 
 
     def onLeftDown(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
 
@@ -427,6 +454,7 @@ class previewPanel(wx.Panel):
                 self.selROI = r
 
     def onLeftUp(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         if self.allowEditing:
@@ -438,6 +466,7 @@ class previewPanel(wx.Panel):
                 self.polyPoints = []
 
     def onMotion(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         if self.allowEditing:
@@ -456,12 +485,14 @@ class previewPanel(wx.Panel):
                 self.selection = (x1,y1), (x2,y1), (x2,y2), (x1, y2)
 
     def prinKeyEventsHelp(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         for key in self.ACTIONS:
             print "%s\t%s" % (key, self.ACTIONS[key][1])
 
     def onKeyPressed(self, event):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Regulates key pressing responses:
         """
@@ -473,6 +504,7 @@ class previewPanel(wx.Panel):
             self.ACTIONS[key][0]()
 
     def Calibrate(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         if len(self.polyPoints) > 2:
@@ -488,6 +520,7 @@ class previewPanel(wx.Panel):
         print "%spixels = 1cm" % r
 
     def AutoMask(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         if len(self.polyPoints > 1):
@@ -498,11 +531,13 @@ class previewPanel(wx.Panel):
         self.polyPoints = []
 
     def SaveMask(self, event=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.mon.saveROIS()
 
     def setMonitor(self, camera, resolution=None):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
 
@@ -521,11 +556,12 @@ class previewPanel(wx.Panel):
 
 
     def paintImg(self, img):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         if img:
             depth, channels = img.depth, img.nChannels
-            print('common, ln 527, cv.cv_maketype')
+            # print('common, ln 527, cv.cv_maketype')
             datatype = cv.CV_MAKETYPE(depth, channels)
 
             frame = cv.CreateMat(self.size[1], self.size[0], datatype)
@@ -538,6 +574,7 @@ class previewPanel(wx.Panel):
             self.Refresh()
 
     def onPaint(self, evt):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         if self.bmp:
@@ -547,6 +584,7 @@ class previewPanel(wx.Panel):
         evt.Skip()
 
     def onNextFrame(self, evt):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         img = self.mon.GetImage(drawROIs = self.drawROI, selection=self.selection, crosses=self.polyPoints, timestamp=self.timestamp)
@@ -554,6 +592,7 @@ class previewPanel(wx.Panel):
         if evt: evt.Skip()
 
     def Play(self, status=True, showROIs=True):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
 
@@ -570,12 +609,14 @@ class previewPanel(wx.Panel):
                 self.playTimer.Stop()
 
     def Stop(self):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.Play(False)
         self.mon.close()
 
     def hasMonitor(self):
+        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         return (self.mon != None)
