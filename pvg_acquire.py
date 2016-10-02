@@ -31,8 +31,9 @@ __license__ = "Python"
 import inspect                                                                       
 
 import os, optparse, sys
-
+import datetime, time
 from pvg_common import pvg_config, acquireThread, DEFAULT_CONFIG
+from pysolovideo import Arena
 
 import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
@@ -41,7 +42,7 @@ import wx.grid as gridlib
 # Not present in dev version
 class customDataTable(gridlib.PyGridTableBase):
     def __init__(self, colLabels, dataTypes, useValueCleaner=True):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         gridlib.PyGridTableBase.__init__(self)
         self.useValueCleaner = useValueCleaner
         self.colLabels = colLabels
@@ -53,7 +54,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
     def GetNumberRows(self):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in customdatatable getnumberrows')               # debug
+        print('inspect not working in customdatatable getnumberrows')               # debug
         try:
             return len(self.data)
         except:
@@ -61,19 +62,19 @@ class customDataTable(gridlib.PyGridTableBase):
 
     def GetNumberCols(self):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in customdatatable getnumbercols')
+        print('inspect not working in customdatatable getnumbercols')
         return len (self.colLabels)
 
     def IsEmptyCell(self, row, col):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in customdatatable isemptycell')
+        print('inspect not working in customdatatable isemptycell')
         try:
             return not self.data[row][col]
         except IndexError:
             return True
 
     def Reset(self, colLabels, dataTypes):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Re-initialise the table
         reset(colLabels, dataTypes)
@@ -92,7 +93,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def ClearTable(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Clear the table
         """
@@ -105,7 +106,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
     def GetValue(self, row, col):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in customdatatable getvalue')                        # debug
+        print('inspect not working in customdatatable getvalue')                        # debug
         """
         (row, col)
         Get value at given coordinates
@@ -116,12 +117,12 @@ class customDataTable(gridlib.PyGridTableBase):
             return ''
 
     def InsertColumn(self, col_pos, col_type=gridlib.GRID_VALUE_FLOAT+':6,2', col_label=''):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Add one grid column before col_pos, with type set to col_type and label col_label
         """
     def transpose(whole_table):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         return map(lambda *row: list(row), *whole_table)
 
         empty_col = [''] * self.GetNumberCols()
@@ -141,7 +142,7 @@ class customDataTable(gridlib.PyGridTableBase):
                 col_pos, 1         ))
 
     def Sort(self, bycols, descending=False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         sort the table by multiple columns
             bycols:  a list (or tuple) specifying the column numbers to sort by
@@ -166,7 +167,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def AddRow (self, rows):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Add one or more rows at the bottom of the table / sheet
         row can be an array of values or a 2-dimenstional array of rows and values
@@ -188,7 +189,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def RemRow (self, rows):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Remove one or more rows
         """
@@ -202,7 +203,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
 
     def SetData(self, data=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Set the whole content of the table to data
         """
@@ -220,7 +221,7 @@ class customDataTable(gridlib.PyGridTableBase):
                 gridlib.GRIDTABLE_REQUEST_VIEW_GET_VALUES))
 
     def SetRow (self, row, data):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         data = self.cleanFromMask(data)
         try:
             self.data[row] = data
@@ -229,7 +230,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
     def SetValue(self, row, col, value):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in setvalue')                                             # debug        
+        print('inspect not working in setvalue')                                             # debug        
         """
         (row, col, value)
         Set Value for cell at given coordinates
@@ -251,7 +252,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
     def GetColLabelValue(self, col):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in getcollabelvalue')
+        print('inspect not working in getcollabelvalue')
         """
         Called when the grid needs to display labels
         """
@@ -261,7 +262,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
     def GetTypeName(self, row, col):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in customdatatable gettypename')                         # debug
+        print('inspect not working in customdatatable gettypename')                         # debug
         """
         Called to determine the kind of editor/renderer to use by
         default, doesn't necessarily have to be the same type used
@@ -272,7 +273,7 @@ class customDataTable(gridlib.PyGridTableBase):
 
     def CanGetValueAs(self, row, col, typeName):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in cangetvalueas')                           # debug
+        print('inspect not working in cangetvalueas')                           # debug
         """
         Called to determine how the data can be fetched and stored by the
         editor and renderer.  This allows you to enforce some type-safety
@@ -286,11 +287,11 @@ class customDataTable(gridlib.PyGridTableBase):
 
     def CanSetValueAs(self, row, col, typeName):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in cansetvalueas')                                             # debug
+        print('inspect not working in cansetvalueas')                                             # debug
         return self.CanGetValueAs(row, col, typeName)
 
     def cleanFromMask(self, l):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Goes through the list l and make sure it doesn't contain
         any masked value
@@ -318,7 +319,7 @@ class CustTableGrid(gridlib.Grid):
     functions for the table are proxied from here
     """
     def __init__(self, parent, colLabels, dataTypes, enableEdit = False, useValueCleaner=True, useMenu=True):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
 
         gridlib.Grid.__init__(self, parent, -1)
         self.table = customDataTable(colLabels, dataTypes, useValueCleaner)
@@ -347,7 +348,7 @@ class CustTableGrid(gridlib.Grid):
         if useMenu: self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnContextMenu)
 
     def OnColumnHeaderPaint(self, evt):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         w = self.GetGridColLabelWindow()
         dc = wx.PaintDC(w)
         clientRect = w.GetClientRect()
@@ -386,7 +387,7 @@ class CustTableGrid(gridlib.Grid):
                      rect, wx.ALIGN_CENTER | wx.ALIGN_TOP)
 
     def Clear(self, *args, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Clear the table empty
         """
@@ -395,7 +396,7 @@ class CustTableGrid(gridlib.Grid):
 
 
     def Reset(self, *args, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Reinitialize the table
         """
@@ -404,7 +405,7 @@ class CustTableGrid(gridlib.Grid):
         self.AutoSizeColumns()
 
     def InsertCol (self, *args, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         (self, col_pos, col_type=gridlib.GRID_VALUE_FLOAT+':6,2', col_label='')
         Add one grid column before col_pos, with type set to col_type and label col_label
@@ -415,14 +416,14 @@ class CustTableGrid(gridlib.Grid):
 
 
     def SetColsSize(self, cols_size):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         for col in range(len(cols_size)):
             self.SetColSize(col, cols_size[col])
 
     def GetData (self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Return a bidimensional array with a copy
         of the data in the spreadsheet
@@ -438,7 +439,7 @@ class CustTableGrid(gridlib.Grid):
         return all_data
 
     def SetData(self, *kargs, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         (data)
         Set the data of the table to the given value
@@ -448,7 +449,7 @@ class CustTableGrid(gridlib.Grid):
         self.AutoSizeColumns()
 
     def GoToEnd(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Go to the end of the table
         """
@@ -456,7 +457,7 @@ class CustTableGrid(gridlib.Grid):
             pass
 
     def AddRow(self, *kargs, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Add one or more rows at the bottom of the table / sheet
         row can be an array of values or a 2-dimenstional array of rows and values
@@ -468,7 +469,7 @@ class CustTableGrid(gridlib.Grid):
         #self.GoToEnd()
 
     def RemRow(self, *kargs, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Add one or more rows at the bottom of the table / sheet
         row can be an array of values or a 2-dimenstional array of rows and values
@@ -479,21 +480,21 @@ class CustTableGrid(gridlib.Grid):
         row = self.GetNumberRows()
 
     def GetNumberRows(self, *kargs, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Return the number of Rows
         """
         return self.table.GetNumberRows ()
 
     def GetNumberCols(self, *kargs, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Return the number of cols
         """
         return self.table.GetNumberCols ()
 
     def HideCol(self, col):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         (col)
         Hide the specified column by setting its size to 0
@@ -501,7 +502,7 @@ class CustTableGrid(gridlib.Grid):
         self.SetColSize(col, 0)
 
     def OnKeyUp(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Records whether the Ctrl Key is up or down
         """
@@ -510,7 +511,7 @@ class CustTableGrid(gridlib.Grid):
         event.Skip()
 
     def OnKeyDown(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Responds to the following keys:
         Enter -> Jumps to next cell
@@ -551,7 +552,7 @@ class CustTableGrid(gridlib.Grid):
                 pass
 
     def OnLeftClick(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         On mouse click checks if the cell contain a checkbox and if it does
         will change its status
@@ -559,7 +560,7 @@ class CustTableGrid(gridlib.Grid):
         self.ForceRefresh()
 
     def OnSort(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Clicking on the label of the columns sorts data in one order, a second click reverses the order.
         """
@@ -580,7 +581,7 @@ class CustTableGrid(gridlib.Grid):
 
 
     def OnContextMenu(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Creates and handles a popup menu
         """
@@ -622,7 +623,7 @@ class CustTableGrid(gridlib.Grid):
         menu.Destroy()
 
     def OnCopyCol(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Copy to clipboard the content of the entire currently
         selected column, including the column label
@@ -637,7 +638,7 @@ class CustTableGrid(gridlib.Grid):
             wx.MessageBox("Unable to open the clipboard", "Error")
 
     def OnCopyRow(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Copy to clipboard the content of the entire currently
         selected row
@@ -654,12 +655,12 @@ class CustTableGrid(gridlib.Grid):
     # I do this because I don't like the default behaviour of not starting the
     # cell editor on double clicks, but only a second click.
     def OnLeftDClick(self, evt):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         if self.CanEnableCellControl():
             self.EnableCellEditControl()
 
     def OnCopyAll(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Copy the all table to clipboard
         """
@@ -672,7 +673,7 @@ class CustTableGrid(gridlib.Grid):
             wx.MessageBox("Unable to open the clipboard", "Error")
 
     def OnCopySelected(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Copy selected cells to system clipboard
         """
@@ -685,7 +686,7 @@ class CustTableGrid(gridlib.Grid):
             wx.MessageBox("Unable to open the clipboard", "Error")
 
     def OnExportToFile(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Save away the content of the grid as CSV file
         """
@@ -700,7 +701,7 @@ class CustTableGrid(gridlib.Grid):
         dlg.Destroy()
 
     def DataToCSV(self, separator=',', onlySel = False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Convert the data in the grid to CSV value format (or equivalent)
         """
@@ -722,7 +723,7 @@ class CustTableGrid(gridlib.Grid):
         return csv
 
     def OnCheckUncheckItems(self, check_value, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Check uncheck all checkable items in the selected rows
         """
@@ -737,7 +738,7 @@ class CustTableGrid(gridlib.Grid):
 
 class pvg_AcquirePanel(wx.Panel):
     def __init__(self, parent):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
 
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self.parent = parent
@@ -775,14 +776,14 @@ class pvg_AcquirePanel(wx.Panel):
         self.SetSizer(mainSizer)
 
     def configCallback(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.loadFile( self.FBconfig.GetValue() )
 
 
     def loadFile(self, filename):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.options = pvg_config(filename)
@@ -792,7 +793,7 @@ class pvg_AcquirePanel(wx.Panel):
         return True
 
     def updateTable(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         monitorsData = self.options.getMonitorsData()
@@ -826,7 +827,7 @@ class pvg_AcquirePanel(wx.Panel):
 #            print(mn, self.monitors[mn], m)                                                 # debug
             
     def isToTrack(self, monitor):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         d = self.grid.GetData()
@@ -834,8 +835,8 @@ class pvg_AcquirePanel(wx.Panel):
             if monitor == row[0]: return row[-1]
 
     def onStart(self, event=None):
-#        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in onstart')                                             # debug
+#        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('inspect not working in onstart')                                             # debug
         """
         """
         self.acquiring = True
@@ -847,11 +848,11 @@ class pvg_AcquirePanel(wx.Panel):
             if self.isToTrack(mon):
                 self.monitors[mon].doTrack()
                 c+=1
-
+                
         self.parent.sb.SetStatusText('Tracking %s Monitors' % c)
 
     def onStop(self, event):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.acquiring = False
@@ -865,7 +866,7 @@ class pvg_AcquirePanel(wx.Panel):
 class acquireFrame(wx.Frame):
     def __init__(self, *args, **kwargs):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in acquireframe __init__')                           # debug
+        print('inspect not working in acquireframe __init__')                           # debug
         kwargs["size"] = (800, 600)
 
         wx.Frame.__init__(self, *args, **kwargs)
@@ -879,7 +880,7 @@ class acquireFrame(wx.Frame):
         """
         """
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('inspect not working in acquireframe loadConfig '+filename)                   # debug
+        print('inspect not working in acquireframe loadConfig '+filename)                   # debug
         if ~os.path.isfile(filename):
             
 #        if filename is None:
@@ -893,7 +894,7 @@ class acquireFrame(wx.Frame):
         return True
 
     def Start(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.acq_panel.onStart()
@@ -901,8 +902,7 @@ class acquireFrame(wx.Frame):
 
 
 if __name__ == '__main__':
-#    sys.stdout = open('d:\\DAM_Analysis\\stdout.txt', 'w')                                                  # DEBUG
-    
+    sys.stdout = open('d:\\DAM_Analysis\\stdout.txt', 'w')                                                  # DEBUG
     
     parser = optparse.OptionParser(usage='%prog [options] [argument]', version='%prog version 1.0')
     parser.add_option('-c', '--config', dest='config_file', metavar="CONFIG_FILE", help="The full path to the config file to open")

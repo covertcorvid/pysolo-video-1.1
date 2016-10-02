@@ -49,7 +49,7 @@ pySoloVideoVersion ='dev'
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug','Sep', 'Oct', 'Nov', 'Dec']
 
 def getCameraCount():
-    # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+    print inspect.currentframe().f_back.f_locals['self']                                    # debug
     """
     FIX THIS
     """
@@ -58,7 +58,7 @@ def getCameraCount():
 
     while Cameras:
         try:
-            # print ( cv.CaptureFromCAM(n) )
+            print ( cv.CaptureFromCAM(n) )
             n += 1
         except:
             Cameras = False
@@ -70,7 +70,7 @@ class Cam:
     """
 
     def __addText__(self, frame, text = None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Add current time as stamp to the image
         """
@@ -92,22 +92,22 @@ class Cam:
         return frame
 
     def getResolution(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Returns frame resolution as tuple (w,h)
         """
         return self.resolution
 
     def saveSnapshot(self, filename, quality=90, timestamp=False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
-        # print('class cam, def savesnapshot, getimage(timestamp,imgtype)')                                                            # debug
+        print('class cam, def savesnapshot, getimage(timestamp,imgtype)')                                                            # debug
         img = self.getImage(timestamp, imgType)
         cv.SaveImage(filename, img) #with opencv
 
     def close(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         pass
@@ -119,7 +119,7 @@ class realCam(Cam):
     camera is handled through opencv and images can be transformed to PIL
     """
     def __init__(self, devnum=0, resolution=(640,480)):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
 
         self.devnum=devnum
         self.resolution = resolution
@@ -128,27 +128,27 @@ class realCam(Cam):
         self.__initCamera()
 
     def __initCamera(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         self.camera = cv.CaptureFromCAM(self.devnum)
         self.setResolution (self.resolution)
 
     def getFrameTime(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         print('getframetime = ',time.time())                                                    # debug
         return time.time() #current time epoch in secs.ms
 
     def addTimeStamp(self, img):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
         return self.__addText__(img)
 
     def setResolution(self, (x, y)):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Set resolution of the camera we are acquiring from
         """
@@ -160,7 +160,7 @@ class realCam(Cam):
         self.scale = ( (x, y) != (x1, y1) ) # if the camera does not support resolution, we need to scale the image
 
     def getResolution(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Return real resolution
         """
@@ -170,7 +170,7 @@ class realCam(Cam):
 
 
     def getImage( self, timestamp=False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Returns frame
 
@@ -197,14 +197,14 @@ class realCam(Cam):
         return frame
 
     def isLastFrame(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Added for compatibility with other cams
         """
         return False
 
     def close(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Closes the connection
         """
@@ -219,7 +219,7 @@ class virtualCamMovie(Cam):
     Images are handled through opencv
     """
     def __init__(self, path, step = None, start = None, end = None, loop=False, resolution=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Specifies some of the parameters for working with the movie:
 
@@ -265,7 +265,7 @@ class virtualCamMovie(Cam):
         cv.Zero(self.blackFrame)
 
     def getFrameTime(self, asString=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Return the time of the frame
         """
@@ -280,7 +280,7 @@ class virtualCamMovie(Cam):
             return frameTime / 1000.0 #returning seconds compatibility reasons
 
     def getImage(self, timestamp=False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Returns frame
 
@@ -311,7 +311,7 @@ class virtualCamMovie(Cam):
         return im
 
     def setResolution(self, w, h):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Changes the output resolution
         """
@@ -319,7 +319,7 @@ class virtualCamMovie(Cam):
         self.scale = (self.resolution != self.in_resolution)
 
     def getTotalFrames(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Returns total number of frames
         Be aware of this bug
@@ -328,7 +328,7 @@ class virtualCamMovie(Cam):
         return cv.GetCaptureProperty( self.capture , cv.CV_CAP_PROP_FRAME_COUNT )
 
     def isLastFrame(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Are we processing the last frame in the movie?
         """
@@ -348,7 +348,7 @@ class virtualCamFrames(Cam):
     Images are handled through PIL
     """
     def __init__(self, path, resolution = None, step = None, start = None, end = None, loop = False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         self.path = path
         self.fileList = self.__populateList__(start, end, step)
         self.totalFrames = len(self.fileList)
@@ -365,7 +365,7 @@ class virtualCamFrames(Cam):
         self.scale = (self.in_resolution != self.resolution)
 
     def getFrameTime(self, asString=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Return the time of most recent content modification of the file fname
         """
@@ -384,7 +384,7 @@ class virtualCamFrames(Cam):
             return fileTime
 
     def __populateList__(self, start, end, step):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Populate the file list
         """
@@ -401,7 +401,7 @@ class virtualCamFrames(Cam):
 
 
     def getImage(self, timestamp=False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Returns frame
 
@@ -432,14 +432,14 @@ class virtualCamFrames(Cam):
         return im
 
     def getTotalFrames(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Return the total number of frames
         """
         return self.totalFrames
 
     def isLastFrame(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Are we processing the last frame in the folder?
         """
@@ -453,7 +453,7 @@ class virtualCamFrames(Cam):
             return False
 
     def setResolution(self, w, h):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Changes the output resolution
         """
@@ -461,7 +461,7 @@ class virtualCamFrames(Cam):
         self.scale = (self.resolution != self.in_resolution)
 
     def compressAllImages(self, compression=90, resolution=(960,720)):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         FIX THIS: is this needed?
         Load all images one by one and save them in a new folder
@@ -496,8 +496,8 @@ class Arena():
     The class arena takes care of the flies
     """
     def __init__(self, parent):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena __init__')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena __init__')                                                # debug
 
         self.monitor = parent
 
@@ -531,8 +531,8 @@ class Arena():
         self.outputFile = None
 
     def __relativeBeams(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena __relativebeams')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena __relativebeams')                                                # debug
         """
         Return the coordinates of the beam
         relative to the ROI to which they belong
@@ -550,8 +550,8 @@ class Arena():
         return newbeams
 
     def __ROItoRect(self, coords):
-#        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-#        # print('        called Arena __roitorect')                                                # debug
+#        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+#        print('        called Arena __roitorect')                                                # debug
         """
         Used internally
         Converts a ROI (a tuple of four points coordinates) into
@@ -567,7 +567,7 @@ class Arena():
 
     def __distance( self, (x1, y1), (x2, y2) ):
 #        print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('   Arena __distance')                                                # debug
+        print('   Arena __distance')                                                # debug
         """
         Calculate the distance between two cartesian points
         """
@@ -576,8 +576,8 @@ class Arena():
         return np.sqrt((x2-x1)**2 + (y2-y1)**2)
 
     def __getMidline (self, coords):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena __getmidline')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena __getmidline')                                                # debug
         """
         Return the position of each ROI's midline
         Will automatically determine the orientation of the vial
@@ -594,8 +594,8 @@ class Arena():
             return (x1, ym), (x2, ym)
 
     def calibrate(self, p1, p2, cm=1):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena calibrate')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena calibrate')                                                # debug
         """
         The distance between p1 and p2 will be set to be X cm
         (default 1 cm)
@@ -608,12 +608,12 @@ class Arena():
         return self.ratio
 
     def pxToCm(self, distance_px):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena __pxtocm')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena __pxtocm')                                                # debug
         """
         Converts distance from pixels to cm
         """
-        # print(distance_px / self.ratio)                                                # debug
+        print(distance_px / self.ratio)                                                # debug
 
         if self.ratio:
             return distance_px / self.ratio
@@ -622,8 +622,8 @@ class Arena():
             return distance_px
 
     def addROI(self, coords, n_flies):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena addroi')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena addroi')                                                # debug
         """
         Add a new ROI to the arena
         """
@@ -637,8 +637,8 @@ class Arena():
         print('addROI 637, flydatamin = ',self.flyDataMin)                                  # debug
         
     def getROI(self, n):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena getroi')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena getroi')                                                # debug
         """
         Returns the coordinates of the nth crop area
         """
@@ -649,8 +649,8 @@ class Arena():
         return coords
 
     def delROI(self, n):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena delroi')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena delroi')                                                # debug
         """
         removes the nth crop area from the list
         if n -1, remove all
@@ -666,16 +666,16 @@ class Arena():
             self.ROIS = []
 
     def getROInumber(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena getroinumber')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena getroinumber')                                                # debug
         """
         Return the number of current active ROIS
         """
         return len(self.ROIS)
 
     def saveROIS(self, filename):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena saverois')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena saverois')                                                # debug
         """
         Save the current crop data to a file
         """
@@ -686,8 +686,8 @@ class Arena():
         cf.close()
 
     def loadROIS(self, filename):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena loadrois')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena loadrois')                                                # debug
         """
         Load the crop data from a file
         """
@@ -710,8 +710,8 @@ class Arena():
             return False
 
     def resizeROIS(self, origSize, newSize):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena resizerois')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena resizerois')                                                # debug
         """
         Resize the mask to new size so that it would properly fit
         resized images
@@ -732,8 +732,8 @@ class Arena():
         return newROIS
 
     def point_in_poly(self, pt, poly):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena point_in_poly')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena point_in_poly')                                                # debug
         """
         Determine if a point is inside a given polygon or not
         Polygon is a list of (x,y) pairs. This fuction
@@ -764,8 +764,8 @@ class Arena():
         return inside
 
     def isPointInROI(self, pt):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena ispointinroi')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena ispointinroi')                                                # debug
         """
         Check if a given point falls whithin one of the ROI
         Returns the ROI number or else returns -1
@@ -778,8 +778,8 @@ class Arena():
         return -1
 
     def ROIStoRect(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena roistorect')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena roistorect')                                                # debug
         """
         translate ROI (list containing for points a tuples)
         into Rect (list containing two points as tuples)
@@ -791,15 +791,15 @@ class Arena():
         return newROIS
 
     def getLastSteps(self, fly, steps):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena getlaststeps')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena getlaststeps')                                                # debug
         """
         """
         c = self.count_seconds
         return [(x,y) for [x,y] in self.flyDataMin[fly][c-steps:c].tolist()] + [tuple(self.flyDataBuffer[fly].flatten())]
 
     def addFlyCoords(self, count, fly):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Add the provided coordinates to the existing list
         count   int     the fly number in the arena
@@ -832,8 +832,8 @@ class Arena():
         return fly, distance
 
     def compactSeconds(self, FPS, delta):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena compactseconds')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena compactseconds')                                                # debug
         """
         Compact the frames collected in the last second
         by averaging the value of the coordinates
@@ -862,31 +862,63 @@ class Arena():
         self.count_seconds += delta
         self.__n += 1
 
+        
     def writeActivity(self, fps=0, extend=True):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena writeactivity')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena writeactivity')                                                # debug
         """
         Write the activity to file
         Kind of motion depends on user settings
 
         Called every minute; flies treated at once
-        1	09 Dec 11	19:02:19	1	0	1	0	0	0	?		[actual_activity]
+        1	09 Dec 11	19:02:19	1	0	1	0	0	0	?    [actual_activity]
         """
 #        print('writeactivity')                                                # debug
         #Here we build the header
         #year, month, day, hh, mn, sec = time.localtime()[0:6]
-        dt = datetime.datetime.fromtimestamp( self.monitor.getFrameTime() )             # NOT GETTING CORRECT date/time info
-        year, month, day, hh, mn, sec = dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second
-        month = MONTHS[month-1]
 
-        #0 rowline
+#        [date, tt] = self.readdatetimestamp(source)     # this should only need to be done once.  MOVE IT
+
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  convert the zero date times retrieved from the movie to actual date & time
+        print('%%%%%%%%%%%%%%%%%%%%%  need filename here')                                                 # debug
+#        raw_input('press ENTER to continue')                                        # debug
+
+#        zero_dt =  datetime.datetime.strptime("31 12 69 19:01:00","%d %m %y %H:%M:%S")       
+#
+##        start_dt = datetime.datetime.strptime("23 08 16 13:52:17","%d %m %y %H:%M:%S")   # debug   
+##-----------  need to use readdatetimestamp()
+#        start_dt = readdatetimestamp(source)  # ---------------------------------------------->  how do I get the filename of the movie from here ?????
+        self.tempfile = open("pvg_temp.txt","w")                                    # FIX - use global variables?
+        self.tempfile.read()                                       # keep these for use in writeActivity      
+        self.tempfile.close()
+        print("start_dt =",start_dt)
+#
+        print("self.movie = ",self.monitor)
+        movie_dt = datetime.datetime.fromtimestamp(self.monitor.getFrameTime())
+        print("movie_dt = ",movie_dt)
+
+        delta_dt = start_dt - zero_dt
+        print("delta_dt =", delta_dt)
+
+        frame_dt = movie_dt + delta_dt
+        print("frame_dt = ",frame_dt)
+
+        # raw_input("press ENTER to continue")        
+
+        realmovie_dt = frame_dt.strftime("%d %m %y %H:%M:%S")                                                               # debug
+        print("realmovie_dt = ",realmovie_dt)                                                # debug
+
+        sys.stdout.close()                                              # debug
+        sys.stdout = open("/dev/stdout", "w")                                              # debug
+        raw_input("press ENTER to continue")        
+
+#        tt = datetime.datetime(framedatetime,"%H:%M:%S")
+#        print("tt = ",tt)                                                # debug
 
         #1 date
-        date = '%02d %s %s' % (day, month, str(year)[-2:])
-#        print(date)                                                # debug
-        #2 time
-        tt = '%02d:%02d:%02d' % (hh, mn, sec)
-#        print(tt)                                                # debug
+#        dt_date = '%02d %s %s' % (day, month, str(year)[-2:])
+#        #2 time
+#        tt = '%02d:%02d:%02d' % (hh, mn, sec)
         #3 monitor is active
         active = '1'
         #4 average frames per seconds (FPS)
@@ -895,8 +927,8 @@ class Arena():
         tracktype = self.trackType
         #6 is a monitor with sleep deprivation capabilities?
         sleepDep = self.monitor.isSDMonitor * 1
-        # print('sleepdep = ')                                            # debug
-        # print(sleepDep)                                            # debug
+        print('sleepdep = ')                                            # debug
+        print(sleepDep)                                            # debug
         #7 monitor number, not yet implemented
         monitor = '0'
         #8 unused
@@ -918,7 +950,7 @@ class Arena():
 
         elif self.trackType == 2:
             activity = self.calculatePosition()
-        # print('activity = ', activity)                                           # debug
+        print('activity = ', activity)                                           # debug
         # Expand the readings to 32 flies for compatibility reasons with trikinetics
         flies = len ( activity[0].split('\t') )
         if extend and flies < 32:
@@ -926,22 +958,22 @@ class Arena():
         else:
             extension = ''
 
-        # print('extension = ')
-        # # print(extension)                                                        # debug
+        print('extension = ')
+        print(extension)                                                        # debug
         for line in activity:
             self.rowline +=1
-            row_header = '%s\t'*10 % (self.rowline, date, tt, active, damscan, tracktype, sleepDep, monitor, unused, light)
+            row_header = '%s\t'*10 % (self.rowline, realmovie_dt, active, damscan, tracktype, sleepDep, monitor, unused, light)
             row += row_header + line + extension + '\n'
 
         f = open('d:\DAM_Analysis\workfile.txt', 'a')                           # debug
         f.write('\n\n output 936 = | '+row)                                            # debug
         f.close()                                                                  # debug
                       
+        # raw_input("Press Enter to continue...")                               # debug
         if self.outputFile:
             print('outputfile: ',self.outputFile)                                  # debug
             fh = open(self.outputFile, 'a')
             fh.write(row)
-            raw_input("Press Enter to continue...")                               # debug
             fh.close()
 
     def writemyway(self,arrayname,thearray,filename):
@@ -956,7 +988,7 @@ class Arena():
         
 
     def calculateDistances(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
 #        print('        called Arena calculatedistances')                                                # debug
         """
         Motion is calculated as distance in px per minutes
@@ -988,14 +1020,14 @@ class Arena():
         self.writemyway("y1",y1,f)                                                # debug
         self.writemyway("d",d,f)                                                # debug
         f.close()
-        raw_input("type ENTER to continue")        
+        # raw_input("type ENTER to continue")        
         print('activity 992 = ',activity)                                           # debug        
         return activity
 
         
     def calculateVBM(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Arena calculatevbm')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Arena calculatevbm')                                                # debug
         """
         Motion is calculated as virtual beam crossing
         Detects automatically beam orientation (vertical vs horizontal)
@@ -1024,7 +1056,7 @@ class Arena():
         return activity
 
     def calculatePosition(self, resolution=1):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         Simply write out position of the fly at every time interval, as
         decided by "resolution" (seconds)
@@ -1052,8 +1084,8 @@ class Monitor(object):
     """
 
     def __init__(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor __init__')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor __init__')
         """
         A Monitor contains a cam, which can be either virtual or real.
         Everything is handled through openCV
@@ -1081,8 +1113,8 @@ class Monitor(object):
         self.isSDMonitor = False
 
     def __drawBeam(self, img, bm, color=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor __drawbeam')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor __drawbeam')
         """
         Draw the Beam using given coordinates
         """
@@ -1095,8 +1127,8 @@ class Monitor(object):
         return img
 
     def __drawFPS(self, frame):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor __drawFPS')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor __drawFPS')
         """
         """
 
@@ -1117,8 +1149,8 @@ class Monitor(object):
 
 
     def __drawROI(self, img, ROI, color=None, ROInum=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor __drawroi')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor __drawroi')
         """
         Draw ROI on img using given coordinates
         ROI is a tuple of 4 tuples ( (x1, y1), (x2, y2), (x3, y3), (x4, y4) )
@@ -1141,7 +1173,7 @@ class Monitor(object):
         return img
 
     def __drawCross(self, img, pt, color=None):
-#        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+#        print inspect.currentframe().f_back.f_locals['self']                                    # debug
 #        print('        called Monitor __drawcross')
         """
         Draw a cross around a point pt
@@ -1162,8 +1194,8 @@ class Monitor(object):
         return img
 
     def __drawLastSteps(self, img, fly, steps=5, color=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor __drawlaststeps')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor __drawlaststeps')
         """
         Draw the last n (default 5) steps of the fly
         """
@@ -1181,8 +1213,8 @@ class Monitor(object):
 
 
     def __getChannel(self, img, channel='R'):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor __getchannel')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor __getchannel')
         """
         Return only the asked channel R,G or B
         """
@@ -1194,8 +1226,8 @@ class Monitor(object):
         return channels[cn]
 
     def __angle(self, pt1, pt2, pt0):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor __angle')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor __angle')
         """
         Return the angle between three points
         """
@@ -1206,16 +1238,16 @@ class Monitor(object):
         return (dx1*dx2 + dy1*dy2)/np.sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10)
 
     def close(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor close')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor close')
         """
         Closes stream
         """
         self.cam.close()
 
     def CaptureFromCAM(self, devnum=0, resolution=(640,480), options=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor capturefromcam')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor capturefromcam')
         """
         """
         self.isVirtualCam = False
@@ -1228,8 +1260,8 @@ class Monitor(object):
         self.numberOfFrames = 0
 
     def CaptureFromMovie(self, camera, resolution=None, options=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor capturefrommovie')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor capturefrommovie')
         """
         """
         self.isVirtualCam = True
@@ -1246,8 +1278,8 @@ class Monitor(object):
         self.numberOfFrames = self.cam.getTotalFrames()
 
     def CaptureFromFrames(self, camera, resolution=None, options=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor capturefromframes')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor capturefromframes')
         """
         """
         self.isVirtualCam = True
@@ -1264,15 +1296,15 @@ class Monitor(object):
         self.numberOfFrames = self.cam.getTotalFrames()
 
     def hasSource(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor hassource')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor hassource')
         """
         """
         return self.cam != None
 
     def setSource(self, camera, resolution, options=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor setsource')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor setsource')
         """
         Set source intelligently
         """
@@ -1289,7 +1321,7 @@ class Monitor(object):
             self.CaptureFromFrames(camera, resolution, options)
 
     def setTracking(self, track, trackType=0, mask_file='', outputFile=''):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         print('        called Monitor settracking')
         """
         Set the tracking parameters
@@ -1314,16 +1346,16 @@ class Monitor(object):
             self.loadROIS(mask_file)
 
     def getFrameTime(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor getframetime')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor getframetime')
         """
         """
 #        print('getframetime 1290 = ',self.cam.getFrameTime())                                   # debug
         return self.cam.getFrameTime()
 
     def isLastFrame(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor islastframe')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor islastframe')
         """
         Proxy to isLastFrame()
         Handled by camera
@@ -1332,8 +1364,8 @@ class Monitor(object):
 
 
     def saveMovie(self, filename, fps=24, codec='FMP4', startOnKey=False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor savemovie')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor savemovie')
         """
         Determines whether all the frames grabbed through getImage will also
         be saved as movie.
@@ -1351,16 +1383,16 @@ class Monitor(object):
 
 
     def saveSnapshot(self, *args, **kwargs):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor savesnapshot')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor savesnapshot')
         """
         proxy to saveSnapshot
         """
         self.cam.saveSnapshot(*args, **kwargs)
 
     def SetLoop(self,loop):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor setloop')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor setloop')
         """
         Set Loop on or off.
         Will work only in virtual cam mode and not realCam
@@ -1373,8 +1405,8 @@ class Monitor(object):
             return False
 
     def addROI(self, coords, n_flies=1):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor addroi')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor addroi')
         """
         Add the coords for a new ROI and the number of flies we want to track in that area
         selection       (pt1, pt2, pt3, pt4)    A four point selection
@@ -1384,16 +1416,16 @@ class Monitor(object):
         self.arena.addROI(coords, n_flies)
 
     def getROI(self, n):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor getroi')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor getroi')
         """
         Returns the coordinates of the nth crop area
         """
         return self.arena.getROI(n)
 
     def delROI(self, n):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor setroi')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor setroi')
         """
         removes the nth crop area from the list
         if n -1, remove all
@@ -1401,8 +1433,8 @@ class Monitor(object):
         self.arena.delROI(n)
 
     def saveROIS(self, filename=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor saverois')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor saverois')
         """
         Save the current crop data to a file
         """
@@ -1410,8 +1442,8 @@ class Monitor(object):
         self.arena.saveROIS(filename)
 
     def loadROIS(self, filename=None):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor loadrois')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor loadrois')
         """
         Load the crop data from a file
         """
@@ -1419,8 +1451,8 @@ class Monitor(object):
         return self.arena.loadROIS(filename)
 
     def resizeROIS(self, origSize, newSize):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor resizerois')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor resizerois')
         """
         Resize the mask to new size so that it would properly fit
         resized images
@@ -1428,8 +1460,8 @@ class Monitor(object):
         return self.arena.resizeROIS(origSize, newSize)
 
     def isPointInROI(self, pt):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor ispointinroi')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor ispointinroi')
         """
         Check if a given point falls whithin one of the ROI
         Returns the ROI number or else returns -1
@@ -1437,7 +1469,7 @@ class Monitor(object):
         return self.arena.isPointInROI(pt)
 
     def calibrate(self, pt1, pt2, cm=1):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
         print('        called Monitor calibrate')
         """
         Relays to arena calibrate
@@ -1445,8 +1477,8 @@ class Monitor(object):
         return self.arena.calibrate(pt1, pt2, cm)
 
     def autoMask(self, pt1, pt2):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor automask')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor automask')
         """
         EXPERIMENTAL, FIX THIS
         This is experimental
@@ -1478,8 +1510,8 @@ class Monitor(object):
             self.arena.addROI( ( (x,y), (x,y1), (x1,y1), (x1,y) ), 1)
 
     def findOuterFrame(self, img, thresh=50):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor findouterframe')
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor findouterframe')
         """
         EXPERIMENTAL
         Find the greater square
@@ -1573,8 +1605,8 @@ class Monitor(object):
         return squares
 
     def GetImage(self, drawROIs = False, selection=None, crosses=None, timestamp=False):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor getimage')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor getimage')                                                # debug
         """
         GetImage(self, drawROIs = False, selection=None, timestamp=0)
 
@@ -1592,7 +1624,7 @@ class Monitor(object):
         """
         self.imageCount += 1
         frame = self.cam.getImage(timestamp)
-        # print('monitor cam.getimage(timestamp)', frame)                       # debug
+        print('monitor cam.getimage(timestamp)', frame)                       # debug
         if timestamp: frame = self.__drawFPS(frame)
 
         if frame:
@@ -1618,8 +1650,8 @@ class Monitor(object):
         return frame
 
     def processFlyMovements(self):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor processflymovements')                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor processflymovements')                                                # debug
         """
         Decides what to do with the data
         Called every frame
@@ -1635,9 +1667,8 @@ class Monitor(object):
             self.processingFPS = self.__tempFPS; self.__tempFPS = 0
 
     def doTrack(self, frame, show_raw_diff=False, drawPath=True):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
-        # print('        called Monitor dotrack with: frame = ', frame,
-#              'show_raw_diff = ',show_raw_diff, 'drawpath = ',drawPath)                                                # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('        called Monitor dotrack with: frame = ', frame,'show_raw_diff = ',show_raw_diff, 'drawpath = ',drawPath)                                                # debug
 
         """
         Track flies in ROIs using findContour algorithm in opencv

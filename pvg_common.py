@@ -21,6 +21,7 @@
 
 import inspect
 import wx, cv, os
+import datetime, time
 import pysolovideo as pv
 import ConfigParser, threading
 
@@ -200,22 +201,54 @@ class acquireObject():
 class acquireThread(threading.Thread):
 
     def __init__(self, monitor, source, resolution, mask_file, track, track_type, dataFolder):
-        # print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print inspect.currentframe().f_back.f_locals['self']                                    # debug
+        print('         called acquireThread @204')
         """
         """
         threading.Thread.__init__(self)
         self.monitor = monitor
         self.keepGoing = False
-        self.verbose = False
+        self.verbose = True
         self.track = track
         outputFile = os.path.join(dataFolder, 'Monitor%02d.txt' % monitor)
 
         self.mon = pv.Monitor()
         self.mon.setSource(source, resolution)
         self.mon.setTracking(True, track_type, mask_file, outputFile)
+        
+        zero_dt =  datetime.datetime.strptime("31 12 69 19:01:00","%d %m %y %H:%M:%S")       # used for determining datetime of movie frames
+        start_dt = datetime.datetime.strptime("23 08 16 13:52:17","%d %m %y %H:%M:%S")
+        start_dt = self.readdatetimestamp(source)  # gets datetime stamp from filename for calculating true frame time
+        print("start_dt =",start_dt)
 
-        if self.verbose: print ( "Verbose2: Setting monitor %s with source %s and mask %s. Output to %s " % (monitor, source, os.path.split(mask_file)[1], os.path.split(outputFile)[1] ) )
+        self.tempfile = open("pvg_temp.txt","w")                                    # FIX - use global variables?
+        self.tempfile.write("31 12 69 19:01:00"+"\t"+start_dt.strftime("%d %m %y %H:%M:%S") )                                       # keep these for use in writeActivity      
+        self.tempfile.close()
+        
+        if self.verbose: print ( "%%%%%%%%%%%%%%%%%%%%%%%%%%%%555 Verbose2: Setting monitor %s with source %s and mask %s. Output to %s " % (monitor, source, os.path.split(mask_file)[1], os.path.split(outputFile)[1] ) )
 
+    def readdatetimestamp(self,filename):                    
+        """
+        use the filename's date time stamp to find the start date and time      
+        of the movie
+        """
+        dateindex = filename.find("date_")
+        year = filename[dateindex+5:dateindex+9]
+        month = filename[dateindex+10:dateindex+12]
+        day = filename[dateindex+13:dateindex+15]
+        moviedate = ('%s %s %s' % (day, month, str(year)[-2:]))
+        print(moviedate)                                                                     # debug
+        
+        timeindex = filename.find("time_")
+        hour = filename[timeindex+5:timeindex+7]
+        minute = filename[timeindex+8:timeindex+10]
+        second = filename[timeindex+11:timeindex+13]
+        movietime = ('%s:%s:%s' % (hour, minute, second))
+        print(movietime)                                                              # debug                         
+
+        moviedatetime = datetime.datetime.strptime(str(moviedate)+" "+str(movietime),"%d %m %y %H:%M:%S")
+        return(moviedatetime)
+        
     def run(self, kbdint=False):
         # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
