@@ -162,7 +162,7 @@ class acquireObject():
         """
         self.monitor = monitor
         self.keepGoing = False
-        self.verbose = True                                                        # false turns off debug
+        self.verbose = False                                                        # false turns off debug
         self.track = track
         dataFolder = options.GetOption("Data_Folder")
         outputFile = os.path.join(dataFolder, 'Monitor%02d.txt' % monitor)
@@ -206,7 +206,7 @@ class acquireThread(threading.Thread):
         threading.Thread.__init__(self)
         self.monitor = monitor
         self.keepGoing = False
-        self.verbose = True
+        self.verbose = False
         self.track = track
         outputFile = os.path.join(dataFolder, 'Monitor%02d.txt' % monitor)
 

@@ -138,6 +138,7 @@ class realCam(Cam):
         # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         """
         """
+        print('getframetime = ',time.time())                                                    # debug
         return time.time() #current time epoch in secs.ms
 
     def addTimeStamp(self, img):
@@ -270,7 +271,7 @@ class virtualCamMovie(Cam):
         """
 
         frameTime = cv.GetCaptureProperty(self.capture, cv.CV_CAP_PROP_POS_MSEC)
-
+#        print('getframetime2 = ',frameTime)                                                 #debug
 
         if asString:
             frameTime = str( datetime.timedelta(seconds=frameTime / 100.0) )
@@ -506,7 +507,8 @@ class Arena():
         self.ROAS = [] #Regions of Action
         self.minuteFPS = []
 
-        self.period = 60 #in seconds
+        self.period = 61       #in seconds  ****** remember python numbering weirdness:  this is 60 seconds
+
         self.ratio = 0
         self.rowline = 0
 
@@ -632,7 +634,8 @@ class Arena():
         #these increase by one on the fly axis
         self.flyDataBuffer = np.append( self.flyDataBuffer, [self.firstPosition], axis=0) # ( flies, 1, (x,y) )
         self.flyDataMin = np.append (self.flyDataMin, [self.__fa.copy()], axis=0) # ( flies, self.period, (x,y) )
-
+        print('addROI 637, flydatamin = ',self.flyDataMin)                                  # debug
+        
     def getROI(self, n):
         # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         # print('        called Arena getroi')                                                # debug
@@ -697,6 +700,7 @@ class Arena():
             f = len(self.ROIS)
             self.flyDataBuffer = np.zeros( (f,2), dtype=np.int )
             self.flyDataMin = np.zeros ( (f,self.period,2), dtype=np.int )
+            print('loadROIS 703, period =',self.period, 'seconds')                                   # debug
 
             for coords in self.ROIS:
                 self.beams.append ( self.__getMidline (coords)  )
@@ -808,6 +812,9 @@ class Arena():
         min_movement= fly_size / 3
 
         previous_position = tuple(self.flyDataBuffer[count])
+
+        pp = previous_position                                                      # debug
+        
         isFirstMovement = ( previous_position == self.firstPosition )
         fly = fly or previous_position #Fly is None if no blob was detected
 
@@ -820,8 +827,8 @@ class Arena():
         #This way the shape of flyDataBuffer is always (n, (x,y)) and once a second we just have to add the (x,y)
         #values to flyDataMin, whose shape is (n, 60, (x,y))
         self.flyDataBuffer[count] = np.append( self.flyDataBuffer[count], fly, axis=0 ).reshape(-1,2).mean(axis=0)
-        if count == 0: print('------------------------------------------------------------')
-        print('ROI_num = ',count,' fly = ',fly,'previous position = ',previous_position,'distance = ',distance)                                                # debug
+#        if count == 0: print('------------------------------------------------------------')
+#        print('addFlyCoords 831:  ROI_num = ',count,' fly = ',fly,'previous position = ',pp,'distance = ',distance)                                                # debug
         return fly, distance
 
     def compactSeconds(self, FPS, delta):
@@ -838,6 +845,7 @@ class Arena():
         self.minuteFPS.append(FPS)
         self.flyDataMin[:,self.__n] = self.flyDataBuffer
 
+        print('compactseconds 845, count_seconds = ,',self.count_seconds,'  period = ',self.period, '  FPS = ',FPS)
         if self.count_seconds + 1 >= self.period:
             self.writeActivity( fps = np.mean(self.minuteFPS) )
             self.count_seconds = 0
@@ -925,14 +933,27 @@ class Arena():
             row_header = '%s\t'*10 % (self.rowline, date, tt, active, damscan, tracktype, sleepDep, monitor, unused, light)
             row += row_header + line + extension + '\n'
 
+        f = open('d:\DAM_Analysis\workfile.txt', 'a')                           # debug
+        f.write('\n\n output 936 = | '+row)                                            # debug
+        f.close()                                                                  # debug
+                      
         if self.outputFile:
-            print('outputfile: ',self.outputFile)
+            print('outputfile: ',self.outputFile)                                  # debug
             fh = open(self.outputFile, 'a')
-            print('output = ',row)                                                # debug
             fh.write(row)
-#            raw_input("Press Enter to continue...")                               # debug
+            raw_input("Press Enter to continue...")                               # debug
             fh.close()
 
+    def writemyway(self,arrayname,thearray,filename):
+        filename.write("\n\n "+arrayname+" = ")
+#        print("\n\n "+arrayname+" = ")
+        for row in thearray:
+            filename.write("\n row = ")
+#            print("\n row = ")
+            for col in row:
+                filename.write("| ( "+str(col)+" ) ")
+#                print(" ( "+str(col)+" ) ")
+        
 
     def calculateDistances(self):
         # print inspect.currentframe().f_back.f_locals['self']                                    # debug
@@ -955,10 +976,23 @@ class Arena():
         values = d[:,:-1,:].sum(axis=1).reshape(-1)
 
         activity = '\t'.join( ['%s' % int(v) for v in values] )
-        print('activity = ', activity, 'values = ',values)
+
+        f = open('d:\DAM_Analysis\workfile.txt', 'a')                           # debug
+
+        f.write("\n\n activity = |"+activity+"\n")
+        print("\n\n activity 982:  = "+activity+"\n")
+        self.writemyway("fs",fs,f)                                                # debug
+        self.writemyway("x",x,f)                                                # debug
+        self.writemyway("y",y,f)                                                # debug
+        self.writemyway("x1",x1,f)                                                # debug
+        self.writemyway("y1",y1,f)                                                # debug
+        self.writemyway("d",d,f)                                                # debug
+        f.close()
+        raw_input("type ENTER to continue")        
+        print('activity 992 = ',activity)                                           # debug        
         return activity
 
-
+        
     def calculateVBM(self):
         # print inspect.currentframe().f_back.f_locals['self']                                    # debug
         # print('        called Arena calculatevbm')                                                # debug
@@ -1284,6 +1318,7 @@ class Monitor(object):
         # print('        called Monitor getframetime')
         """
         """
+#        print('getframetime 1290 = ',self.cam.getFrameTime())                                   # debug
         return self.cam.getFrameTime()
 
     def isLastFrame(self):
@@ -1557,7 +1592,7 @@ class Monitor(object):
         """
         self.imageCount += 1
         frame = self.cam.getImage(timestamp)
-        # print('monitor cam.getimage(timestamp)', frame)                                                            # debug
+        # print('monitor cam.getimage(timestamp)', frame)                       # debug
         if timestamp: frame = self.__drawFPS(frame)
 
         if frame:
@@ -1592,7 +1627,7 @@ class Monitor(object):
         ct = self.getFrameTime()
         self.__tempFPS += 1
         delta = ( ct - self.lasttime)
-#        print('process fly mvmt, delta = ',delta)                                   # debug
+        print('process fly mvmt 1599, delta = ',delta, 'getframetime = ', ct)                                   # debug
         
         if delta >= 1: # if one second has elapsed
             self.lasttime = ct

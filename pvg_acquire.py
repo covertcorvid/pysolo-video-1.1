@@ -901,7 +901,7 @@ class acquireFrame(wx.Frame):
 
 
 if __name__ == '__main__':
-    sys.stdout = open('d:\\DAM_Analysis\\stdout.txt', 'w')                                                  # DEBUG
+#    sys.stdout = open('d:\\DAM_Analysis\\stdout.txt', 'w')                                                  # DEBUG
     
     
     parser = optparse.OptionParser(usage='%prog [options] [argument]', version='%prog version 1.0')
@@ -918,7 +918,7 @@ if __name__ == '__main__':
 
 #    configfile = options.config_file or DEFAULT_CONFIG
     configfile = 'c:\Users\laughreyl\Documents\DAM_Analysis\Data\Output\myconfig_w_msks.msk'
-    print(configfile)    
+#    print(configfile)                                                              # debug
     cfgloaded = frame_acq.loadConfig(configfile)
 
     if cfgloaded and options.acquire:
